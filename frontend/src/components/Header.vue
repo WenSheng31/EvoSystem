@@ -38,6 +38,7 @@
 
 <script>
 import { useRouter } from 'vue-router'
+import { getAvatarUrl } from '../utils/avatar'
 
 export default {
   name: 'Header',
@@ -53,13 +54,6 @@ export default {
     const handleLogout = () => {
       localStorage.removeItem('token')
       router.push('/login')
-    }
-
-    const getAvatarUrl = (avatarPath) => {
-      if (!avatarPath) return null
-      // 將路徑中的反斜線替換為斜線，並移除 backend/ 前綴
-      const cleanPath = avatarPath.replace(/\\/g, '/').replace('backend/', '')
-      return `http://localhost:8000/${cleanPath}`
     }
 
     return {

@@ -81,6 +81,8 @@ import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
 import axios from 'axios'
 import Header from '../components/Header.vue'
+import { getAvatarUrl } from '../utils/avatar'
+import { API_BASE_URL } from '../utils/config'
 
 export default {
   name: 'Account',
@@ -109,12 +111,6 @@ export default {
       }
     }
 
-    const getAvatarUrl = (avatarPath) => {
-      if (!avatarPath) return null
-      const cleanPath = avatarPath.replace(/\\/g, '/').replace('backend/', '')
-      return `http://localhost:8000/${cleanPath}`
-    }
-
     const handleAvatarUpload = async (event) => {
       const file = event.target.files[0]
       if (!file) return
@@ -124,7 +120,7 @@ export default {
 
       try {
         const token = localStorage.getItem('token')
-        const response = await axios.post('http://localhost:8000/api/avatar', formData, {
+        const response = await axios.post(`${API_BASE_URL}/api/avatar`, formData, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -146,7 +142,7 @@ export default {
         }
 
         const token = localStorage.getItem('token')
-        const response = await axios.patch('http://localhost:8000/api/me', updateData, {
+        const response = await axios.patch(`${API_BASE_URL}/api/me`, updateData, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

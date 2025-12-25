@@ -30,10 +30,11 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { authAPI } from "../api/auth";
 import Header from "../components/Header.vue";
+import { getAvatarUrl } from "../utils/avatar";
 
 export default {
   name: "Home",
@@ -44,6 +45,7 @@ export default {
     const router = useRouter();
     const user = ref(null);
     const currentDateTime = ref("");
+    let intervalId = null;
 
     const fetchUserInfo = async () => {
       try {
@@ -53,12 +55,6 @@ export default {
         console.error("獲取用戶資訊失敗:", err);
         router.push("/login");
       }
-    };
-
-    const getAvatarUrl = (avatarPath) => {
-      if (!avatarPath) return null;
-      const cleanPath = avatarPath.replace(/\\/g, "/").replace("backend/", "");
-      return `http://localhost:8000/${cleanPath}`;
     };
 
     const updateDateTime = () => {
@@ -75,7 +71,13 @@ export default {
     onMounted(() => {
       fetchUserInfo();
       updateDateTime();
-      setInterval(updateDateTime, 1000);
+      intervalId = setInterval(updateDateTime, 1000);
+    });
+
+    onUnmounted(() => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     });
 
     return {
