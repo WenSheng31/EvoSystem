@@ -20,9 +20,17 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserUpdate(BaseModel):
+    """用戶更新"""
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+
+
 class UserResponse(UserBase):
     """用戶回應"""
     id: int
+    avatar: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 

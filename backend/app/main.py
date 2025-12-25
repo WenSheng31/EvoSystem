@@ -1,14 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from .core.config import settings
 from .core.database import engine, Base
 from .api.routes import auth, users
+from pathlib import Path
 
 # 創建資料庫表
 Base.metadata.create_all(bind=engine)
 
 # 建立應用
 app = FastAPI(title=settings.PROJECT_NAME)
+
+# 靜態文件服務
+UPLOAD_DIR = Path("backend/uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 # CORS
 app.add_middleware(

@@ -36,7 +36,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """獲取當前用戶"""
     from ..models.user import User
-    from ..schemas.user import TokenData
 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,14 +45,13 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(User.username == token_data.username).first()
+    user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception
     return user

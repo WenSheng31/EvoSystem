@@ -13,6 +13,8 @@ env/
 backend/.venv/
 backend/__pycache__/
 backend/*.pyc
+backend/uploads/avatars/*
+!backend/uploads/avatars/.gitkeep
 
 # Frontend
 frontend/node_modules/

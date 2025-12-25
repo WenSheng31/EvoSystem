@@ -33,8 +33,6 @@
             class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
-        <div v-if="success" class="text-green-600 text-sm">{{ success }}</div>
         <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
           註冊
         </button>
@@ -50,37 +48,33 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
+import { useToast } from '../composables/useToast'
 
 export default {
   name: 'Register',
   setup() {
     const router = useRouter()
+    const toast = useToast()
     const formData = ref({
       username: '',
       email: '',
       password: ''
     })
-    const error = ref('')
-    const success = ref('')
 
     const handleRegister = async () => {
       try {
-        error.value = ''
-        success.value = ''
         await authAPI.register(formData.value)
-        success.value = '註冊成功！即將跳轉到登入頁面...'
+        toast.success('註冊成功！即將跳轉到登入頁面...')
         setTimeout(() => {
           router.push('/login')
         }, 2000)
       } catch (err) {
-        error.value = err.response?.data?.detail || '註冊失敗'
+        toast.error(err.response?.data?.detail || '註冊失敗')
       }
     }
 
     return {
       formData,
-      error,
-      success,
       handleRegister
     }
   }

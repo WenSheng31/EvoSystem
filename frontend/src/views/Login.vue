@@ -23,7 +23,6 @@
             class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
         <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
           登入
         </button>
@@ -39,31 +38,31 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
+import { useToast } from '../composables/useToast'
 
 export default {
   name: 'Login',
   setup() {
     const router = useRouter()
+    const toast = useToast()
     const formData = ref({
       username: '',
       password: ''
     })
-    const error = ref('')
 
     const handleLogin = async () => {
       try {
-        error.value = ''
         const response = await authAPI.login(formData.value)
         localStorage.setItem('token', response.data.access_token)
-        router.push('/home')
+        toast.success('登入成功')
+        setTimeout(() => router.push('/home'), 500)
       } catch (err) {
-        error.value = err.response?.data?.detail || '登入失敗'
+        toast.error(err.response?.data?.detail || '登入失敗')
       }
     }
 
     return {
       formData,
-      error,
       handleLogin
     }
   }
