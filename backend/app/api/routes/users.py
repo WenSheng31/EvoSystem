@@ -11,7 +11,7 @@ from ...schemas.user import UserResponse, UserUpdate
 router = APIRouter()
 
 # 上傳目錄設定
-UPLOAD_DIR = Path("backend/uploads/avatars")
+UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads" / "avatars"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -84,7 +84,13 @@ async def upload_avatar(
 
     # 刪除舊頭像
     if current_user.avatar:
-        old_avatar_path = Path(current_user.avatar)
+        # 從相對路徑轉換為絕對路徑
+        if current_user.avatar.startswith("backend/"):
+            old_filename = current_user.avatar.split("/")[-1]
+            old_avatar_path = UPLOAD_DIR / old_filename
+        else:
+            old_avatar_path = Path(current_user.avatar)
+
         if old_avatar_path.exists():
             old_avatar_path.unlink()
 
@@ -96,8 +102,9 @@ async def upload_avatar(
     with open(file_path, "wb") as f:
         f.write(contents)
 
-    # 更新資料庫
-    current_user.avatar = str(file_path)
+    # 更新資料庫 - 儲存相對路徑
+    relative_path = f"backend/uploads/avatars/{filename}"
+    current_user.avatar = relative_path
     db.commit()
     db.refresh(current_user)
 
