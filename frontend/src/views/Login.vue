@@ -1,0 +1,71 @@
+<template>
+  <div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <div class="bg-white p-8 w-full max-w-sm rounded">
+      <h2 class="text-xl font-semibold mb-6 text-gray-900">登入</h2>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">用戶名</label>
+          <input
+            v-model="formData.username"
+            type="text"
+            required
+            placeholder="請輸入用戶名"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+          />
+        </div>
+        <div>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">密碼</label>
+          <input
+            v-model="formData.password"
+            type="password"
+            required
+            placeholder="請輸入密碼"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+          />
+        </div>
+        <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
+        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
+          登入
+        </button>
+      </form>
+      <div class="mt-6 text-center text-sm text-gray-600">
+        還沒有帳號？ <router-link to="/register" class="text-gray-900 font-medium hover:underline">註冊</router-link>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { authAPI } from '../api/auth'
+
+export default {
+  name: 'Login',
+  setup() {
+    const router = useRouter()
+    const formData = ref({
+      username: '',
+      password: ''
+    })
+    const error = ref('')
+
+    const handleLogin = async () => {
+      try {
+        error.value = ''
+        const response = await authAPI.login(formData.value)
+        localStorage.setItem('token', response.data.access_token)
+        router.push('/home')
+      } catch (err) {
+        error.value = err.response?.data?.detail || '登入失敗'
+      }
+    }
+
+    return {
+      formData,
+      error,
+      handleLogin
+    }
+  }
+}
+</script>
