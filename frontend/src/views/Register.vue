@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-50">
     <div class="bg-white p-8 w-full max-w-sm rounded">
-      <h2 class="text-xl font-semibold mb-6 text-gray-900">註冊</h2>
+      <h2 class="text-xl font-semibold mb-6 text-gray-900 text-center">註冊</h2>
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
           <label class="block mb-1.5 text-gray-700 text-sm font-medium">用戶名</label>
