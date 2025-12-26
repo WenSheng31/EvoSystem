@@ -39,6 +39,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
+import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
 
 export default {
   name: 'Login',
@@ -55,7 +56,7 @@ export default {
         const response = await authAPI.login(formData.value)
         localStorage.setItem('token', response.data.access_token)
         toast.success('登入成功')
-        setTimeout(() => router.push('/home'), 500)
+        setTimeout(() => router.push(ROUTES.HOME), NAVIGATION_DELAYS.LOGIN_SUCCESS)
       } catch (err) {
         toast.error(err.response?.data?.detail || '登入失敗')
       }

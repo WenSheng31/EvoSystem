@@ -79,10 +79,9 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
-import axios from 'axios'
+import { useUser } from '../composables/useUser'
 import Header from '../components/Header.vue'
 import { getAvatarUrl } from '../utils/avatar'
-import { API_BASE_URL } from '../utils/config'
 
 export default {
   name: 'Account',
@@ -92,22 +91,20 @@ export default {
   setup() {
     const router = useRouter()
     const toast = useToast()
-    const user = ref(null)
+    const { user, fetchUserInfo, updateUser } = useUser()
     const fileInput = ref(null)
     const formData = ref({
       username: '',
       email: ''
     })
 
-    const fetchUserInfo = async () => {
+    const loadUserInfo = async () => {
       try {
-        const response = await authAPI.getCurrentUser()
-        user.value = response.data
-        formData.value.username = response.data.username
-        formData.value.email = response.data.email
+        const userData = await fetchUserInfo()
+        formData.value.username = userData.username
+        formData.value.email = userData.email
       } catch (err) {
-        console.error('獲取用戶資訊失敗:', err)
-        router.push('/login')
+        // response interceptor 會自動處理 401 錯誤並跳轉
       }
     }
 
@@ -115,18 +112,9 @@ export default {
       const file = event.target.files[0]
       if (!file) return
 
-      const formData = new FormData()
-      formData.append('file', file)
-
       try {
-        const token = localStorage.getItem('token')
-        const response = await axios.post(`${API_BASE_URL}/api/avatar`, formData, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        user.value = response.data
+        const response = await authAPI.uploadAvatar(file)
+        updateUser(response.data)
         toast.success('頭像更新成功')
       } catch (error) {
         console.error('上傳頭像失敗:', error)
@@ -141,15 +129,8 @@ export default {
           email: formData.value.email
         }
 
-        const token = localStorage.getItem('token')
-        const response = await axios.patch(`${API_BASE_URL}/api/me`, updateData, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-
-        user.value = response.data
+        const response = await authAPI.updateProfile(updateData)
+        updateUser(response.data)
         toast.success('資料更新成功')
       } catch (error) {
         console.error('更新失敗:', error)
@@ -158,7 +139,7 @@ export default {
     }
 
     onMounted(() => {
-      fetchUserInfo()
+      loadUserInfo()
     })
 
     return {

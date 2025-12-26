@@ -32,7 +32,7 @@
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { authAPI } from "../api/auth";
+import { useUser } from "../composables/useUser";
 import Header from "../components/Header.vue";
 import { getAvatarUrl } from "../utils/avatar";
 
@@ -43,19 +43,9 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const user = ref(null);
+    const { user, fetchUserInfo } = useUser();
     const currentDateTime = ref("");
     let intervalId = null;
-
-    const fetchUserInfo = async () => {
-      try {
-        const response = await authAPI.getCurrentUser();
-        user.value = response.data;
-      } catch (err) {
-        console.error("獲取用戶資訊失敗:", err);
-        router.push("/login");
-      }
-    };
 
     const updateDateTime = () => {
       const now = new Date();

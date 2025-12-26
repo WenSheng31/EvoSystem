@@ -39,6 +39,7 @@
 <script>
 import { useRouter } from 'vue-router'
 import { getAvatarUrl } from '../utils/avatar'
+import { ROUTES } from '../config/constants'
 
 export default {
   name: 'Header',
@@ -53,7 +54,8 @@ export default {
 
     const handleLogout = () => {
       localStorage.removeItem('token')
-      router.push('/login')
+      // 使用 window.location.href 確保完全重新載入頁面
+      window.location.href = ROUTES.LOGIN
     }
 
     return {

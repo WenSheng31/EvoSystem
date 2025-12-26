@@ -49,6 +49,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
+import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
 
 export default {
   name: 'Register',
@@ -66,8 +67,8 @@ export default {
         await authAPI.register(formData.value)
         toast.success('註冊成功！即將跳轉到登入頁面...')
         setTimeout(() => {
-          router.push('/login')
-        }, 2000)
+          router.push(ROUTES.LOGIN)
+        }, NAVIGATION_DELAYS.REGISTER_SUCCESS)
       } catch (err) {
         toast.error(err.response?.data?.detail || '註冊失敗')
       }

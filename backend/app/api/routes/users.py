@@ -5,16 +5,17 @@ import uuid
 from pathlib import Path
 from ...core.security import get_current_user, get_password_hash
 from ...core.database import get_db
+from ...core.config import settings
 from ...models.user import User
 from ...schemas.user import UserResponse, UserUpdate
 
 router = APIRouter()
 
 # 上傳目錄設定
-UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads" / "avatars"
+UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / settings.UPLOAD_DIR / "avatars"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+ALLOWED_EXTENSIONS = set(settings.ALLOWED_EXTENSIONS)
+MAX_FILE_SIZE = settings.MAX_FILE_SIZE
 
 
 @router.get("/me", response_model=UserResponse)
