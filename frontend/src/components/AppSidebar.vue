@@ -19,7 +19,7 @@
       </div>
 
       <!-- 導航選單 -->
-      <nav class="flex-1 px-4 overflow-y-auto">
+      <nav class="flex-1 px-4 pt-4 lg:pt-0 overflow-y-auto">
         <router-link
           v-for="item in menuItems"
           :key="item.path"
