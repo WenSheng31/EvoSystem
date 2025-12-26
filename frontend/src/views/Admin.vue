@@ -1,8 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50 overflow-x-hidden">
-    <Header :user="user" />
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <h1 class="text-2xl font-semibold text-gray-900 mb-6">用戶管理</h1>
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">用戶管理</h1>
 
       <div class="bg-white rounded border border-gray-200">
         <div class="overflow-x-auto">
@@ -116,7 +114,6 @@
           </table>
         </div>
       </div>
-    </main>
   </div>
 </template>
 
@@ -126,15 +123,11 @@ import { useRouter } from "vue-router";
 import { authAPI } from "../api/auth";
 import { useUser } from "../composables/useUser";
 import { useToast } from "../composables/useToast";
-import Header from "../components/Header.vue";
 import { ROUTES } from "../config/constants";
 import { getAvatarUrl } from "../utils/avatar";
 
 export default {
   name: "Admin",
-  components: {
-    Header,
-  },
   setup() {
     const router = useRouter();
     const { user, fetchUserInfo } = useUser();

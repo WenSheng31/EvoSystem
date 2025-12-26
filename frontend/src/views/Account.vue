@@ -1,8 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50 overflow-x-hidden">
-    <Header :user="user" />
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <h1 class="text-2xl font-semibold text-gray-900 mb-6">帳號管理</h1>
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">帳號管理</h1>
 
       <!-- 頭像上傳 -->
       <div class="bg-white p-6 rounded mb-6">
@@ -82,26 +80,19 @@
           </div>
         </form>
       </div>
-    </main>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
 import { useUser } from '../composables/useUser'
-import Header from '../components/Header.vue'
 import { getAvatarUrl } from '../utils/avatar'
 
 export default {
   name: 'Account',
-  components: {
-    Header
-  },
   setup() {
-    const router = useRouter()
     const toast = useToast()
     const { user, fetchUserInfo, updateUser } = useUser()
     const fileInput = ref(null)

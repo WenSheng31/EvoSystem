@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import MainLayout from '../layouts/MainLayout.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
@@ -21,22 +22,28 @@ const routes = [
     component: Register
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: Home,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/account',
-    name: 'Account',
-    component: Account,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/admin',
-    name: 'Admin',
-    component: Admin,
-    meta: { requiresAuth: true, requiresAdmin: true }
+    path: '/',
+    component: MainLayout,
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: Home,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'account',
+        name: 'Account',
+        component: Account,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin',
+        name: 'Admin',
+        component: Admin,
+        meta: { requiresAuth: true, requiresAdmin: true }
+      }
+    ]
   }
 ]
 

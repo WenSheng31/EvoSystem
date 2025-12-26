@@ -1,51 +1,43 @@
 <template>
-  <div class="min-h-screen bg-gray-50 overflow-x-hidden">
-    <Header :user="user" />
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <div class="bg-white rounded p-6">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
-          >
-            <img
-              v-if="user?.avatar"
-              :src="getAvatarUrl(user.avatar)"
-              alt="Avatar"
-              class="w-full h-full object-cover"
-            />
-            <span v-else class="text-gray-600 font-medium text-2xl">
-              {{ user?.username.charAt(0).toUpperCase() }}
-            </span>
-          </div>
-          <div>
-            <h2 class="text-xl font-medium text-gray-900">
-              歡迎使用本系統，{{ user?.username }}
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">{{ currentDateTime }}</p>
-            <p v-if="user?.bio" class="text-sm text-gray-700 mt-2">
-              {{ user.bio }}
-            </p>
-          </div>
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">首頁</h1>
+    <div class="bg-white rounded p-6">
+      <div class="flex items-center gap-4">
+        <div
+          class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
+        >
+          <img
+            v-if="user?.avatar"
+            :src="getAvatarUrl(user.avatar)"
+            alt="Avatar"
+            class="w-full h-full object-cover"
+          />
+          <span v-else class="text-gray-600 font-medium text-2xl">
+            {{ user?.username.charAt(0).toUpperCase() }}
+          </span>
+        </div>
+        <div>
+          <h2 class="text-xl font-medium text-gray-900">
+            歡迎使用本系統，{{ user?.username }}
+          </h2>
+          <p class="text-sm text-gray-600 mt-1">{{ currentDateTime }}</p>
+          <p v-if="user?.bio" class="text-sm text-gray-700 mt-2">
+            {{ user.bio }}
+          </p>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
 import { useUser } from "../composables/useUser";
-import Header from "../components/Header.vue";
 import { getAvatarUrl } from "../utils/avatar";
 
 export default {
   name: "Home",
-  components: {
-    Header,
-  },
   setup() {
-    const router = useRouter();
     const { user, fetchUserInfo } = useUser();
     const currentDateTime = ref("");
     let intervalId = null;
