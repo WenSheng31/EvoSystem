@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import os
 import uuid
 from pathlib import Path
-from ...core.security import get_current_user, get_password_hash
+from ...core.security import get_current_user, get_password_hash, verify_password
 from ...core.database import get_db
 from ...core.config import settings
 from ...models.user import User
@@ -55,8 +55,18 @@ def update_current_user(
     if user_update.bio is not None:
         current_user.bio = user_update.bio
 
-    # 更新密碼
+    # 更新密碼（需要驗證舊密碼）
     if user_update.password:
+        if not user_update.old_password:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="修改密碼需要提供舊密碼"
+            )
+        if not verify_password(user_update.old_password, current_user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="舊密碼錯誤"
+            )
         current_user.hashed_password = get_password_hash(user_update.password)
 
     db.commit()
@@ -89,15 +99,24 @@ async def upload_avatar(
 
     # 刪除舊頭像
     if current_user.avatar:
-        # 從相對路徑轉換為絕對路徑
-        if current_user.avatar.startswith("backend/"):
-            old_filename = current_user.avatar.split("/")[-1]
-            old_avatar_path = UPLOAD_DIR / old_filename
-        else:
-            old_avatar_path = Path(current_user.avatar)
+        try:
+            # 安全地從相對路徑提取檔名
+            if current_user.avatar.startswith("backend/uploads/avatars/"):
+                old_filename = current_user.avatar.split("/")[-1]
+                # 驗證檔名不包含路徑遍歷字符
+                if ".." in old_filename or "/" in old_filename or "\\" in old_filename:
+                    raise ValueError("Invalid filename")
 
-        if old_avatar_path.exists():
-            old_avatar_path.unlink()
+                old_avatar_path = UPLOAD_DIR / old_filename
+                # 確保路徑在 UPLOAD_DIR 內
+                if old_avatar_path.resolve().parent != UPLOAD_DIR.resolve():
+                    raise ValueError("Path traversal detected")
+
+                if old_avatar_path.exists() and old_avatar_path.is_file():
+                    old_avatar_path.unlink()
+        except (ValueError, OSError):
+            # 如果路徑無效，忽略刪除操作，繼續上傳新頭像
+            pass
 
     # 生成唯一檔名
     filename = f"{uuid.uuid4()}{file_ext}"

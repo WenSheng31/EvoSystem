@@ -60,6 +60,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     bio: Optional[str] = None
     password: Optional[str] = None
+    old_password: Optional[str] = None
 
     @field_validator('username')
     @classmethod

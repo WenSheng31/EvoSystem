@@ -55,6 +55,11 @@ export default {
       try {
         const response = await authAPI.login(formData.value)
         localStorage.setItem('token', response.data.access_token)
+
+        // 獲取用戶信息並存儲角色
+        const userInfo = await authAPI.getCurrentUser()
+        localStorage.setItem('userRole', userInfo.data.role)
+
         toast.success('登入成功')
         setTimeout(() => router.push(ROUTES.HOME), NAVIGATION_DELAYS.LOGIN_SUCCESS)
       } catch (err) {

@@ -116,6 +116,7 @@ export default {
 
     const handleLogout = () => {
       localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
       window.location.href = ROUTES.LOGIN;
     };
 

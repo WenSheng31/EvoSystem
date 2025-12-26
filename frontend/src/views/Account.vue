@@ -27,9 +27,10 @@
             />
             <button
               @click="$refs.fileInput.click()"
-              class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded hover:bg-gray-50"
+              :disabled="uploadingAvatar"
+              class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              上傳新頭像
+              {{ uploadingAvatar ? '上傳中...' : '上傳新頭像' }}
             </button>
             <p class="text-xs text-gray-500 mt-2">支援 JPG, PNG, GIF（最大 5MB）</p>
           </div>
@@ -73,9 +74,10 @@
           <div class="mt-6">
             <button
               type="submit"
-              class="px-4 py-2 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800"
+              :disabled="updatingProfile"
+              class="px-4 py-2 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              儲存變更
+              {{ updatingProfile ? '儲存中...' : '儲存變更' }}
             </button>
           </div>
         </form>
@@ -96,6 +98,8 @@ export default {
     const toast = useToast()
     const { user, fetchUserInfo, updateUser } = useUser()
     const fileInput = ref(null)
+    const uploadingAvatar = ref(false)
+    const updatingProfile = ref(false)
     const formData = ref({
       username: '',
       email: '',
@@ -117,6 +121,7 @@ export default {
       const file = event.target.files[0]
       if (!file) return
 
+      uploadingAvatar.value = true
       try {
         const response = await authAPI.uploadAvatar(file)
         updateUser(response.data)
@@ -124,6 +129,9 @@ export default {
       } catch (error) {
         console.error('上傳頭像失敗:', error)
         toast.error(error.response?.data?.detail || '上傳失敗')
+      } finally {
+        uploadingAvatar.value = false
+        event.target.value = '' // 清空文件選擇，允許重新上傳同一文件
       }
     }
 
@@ -134,6 +142,7 @@ export default {
         return
       }
 
+      updatingProfile.value = true
       try {
         const updateData = {
           username: formData.value.username,
@@ -147,6 +156,8 @@ export default {
       } catch (error) {
         console.error('更新失敗:', error)
         toast.error(error.response?.data?.detail || '更新失敗')
+      } finally {
+        updatingProfile.value = false
       }
     }
 
@@ -158,6 +169,8 @@ export default {
       user,
       fileInput,
       formData,
+      uploadingAvatar,
+      updatingProfile,
       getAvatarUrl,
       handleAvatarUpload,
       handleUpdateProfile
