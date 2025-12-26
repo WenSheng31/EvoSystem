@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "會員系統 API"
     API_V1_PREFIX: str = "/api"
 
-    # CORS
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:5173", "http://localhost:3000"]
+    # CORS（開發環境允許所有來源，生產環境需要設定具體網址）
+    BACKEND_CORS_ORIGINS: list = ["*"]
 
     # 檔案上傳
     MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB

@@ -21,9 +21,6 @@
             歡迎使用本系統，{{ user?.username }}
           </h2>
           <p class="text-sm text-gray-600 mt-1">{{ currentDateTime }}</p>
-          <p v-if="user?.bio" class="text-sm text-gray-700 mt-2">
-            {{ user.bio }}
-          </p>
         </div>
       </div>
     </div>
