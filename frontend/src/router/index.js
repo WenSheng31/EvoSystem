@@ -3,6 +3,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
 import Account from '../views/Account.vue'
+import Admin from '../views/Admin.vue'
 
 const routes = [
   {
@@ -30,6 +31,12 @@ const routes = [
     name: 'Account',
     component: Account,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 

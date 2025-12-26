@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 overflow-x-hidden">
     <Header :user="user" />
-    <main class="max-w-2xl mx-auto px-6 py-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       <h1 class="text-2xl font-semibold text-gray-900 mb-6">帳號管理</h1>
 
       <!-- 頭像上傳 -->
@@ -60,6 +60,18 @@
             />
           </div>
 
+          <div>
+            <label class="block mb-1.5 text-gray-700 text-sm font-medium">個人簡介</label>
+            <textarea
+              v-model="formData.bio"
+              rows="3"
+              maxlength="200"
+              placeholder="介紹一下自己..."
+              class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900 resize-none"
+            ></textarea>
+            <p class="text-xs text-gray-500 mt-1">{{ formData.bio?.length || 0 }}/200</p>
+          </div>
+
           <div class="mt-6">
             <button
               type="submit"
@@ -95,7 +107,8 @@ export default {
     const fileInput = ref(null)
     const formData = ref({
       username: '',
-      email: ''
+      email: '',
+      bio: ''
     })
 
     const loadUserInfo = async () => {
@@ -103,6 +116,7 @@ export default {
         const userData = await fetchUserInfo()
         formData.value.username = userData.username
         formData.value.email = userData.email
+        formData.value.bio = userData.bio || ''
       } catch (err) {
         // response interceptor 會自動處理 401 錯誤並跳轉
       }
@@ -123,10 +137,17 @@ export default {
     }
 
     const handleUpdateProfile = async () => {
+      // 前端驗證
+      if (formData.value.username.length > 20) {
+        toast.error('用戶名最多 20 個字符')
+        return
+      }
+
       try {
         const updateData = {
           username: formData.value.username,
-          email: formData.value.email
+          email: formData.value.email,
+          bio: formData.value.bio
         }
 
         const response = await authAPI.updateProfile(updateData)

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .core.config import settings
 from .core.database import engine, Base
-from .api.routes import auth, users
+from .api.routes import auth, users, admin
 from pathlib import Path
 
 # 創建資料庫表
@@ -29,6 +29,7 @@ app.add_middleware(
 # 註冊路由
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["認證"])
 app.include_router(users.router, prefix=settings.API_V1_PREFIX, tags=["用戶"])
+app.include_router(admin.router, prefix=f"{settings.API_V1_PREFIX}/admin", tags=["管理員"])
 
 
 @app.get("/")

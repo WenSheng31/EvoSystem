@@ -63,6 +63,12 @@ export default {
     })
 
     const handleRegister = async () => {
+      // 前端驗證
+      if (formData.value.username.length > 20) {
+        toast.error('用戶名最多 20 個字符')
+        return
+      }
+
       try {
         await authAPI.register(formData.value)
         toast.success('註冊成功！即將跳轉到登入頁面...')
@@ -70,7 +76,13 @@ export default {
           router.push(ROUTES.LOGIN)
         }, NAVIGATION_DELAYS.REGISTER_SUCCESS)
       } catch (err) {
-        toast.error(err.response?.data?.detail || '註冊失敗')
+        // 只顯示簡潔的錯誤訊息
+        const detail = err.response?.data?.detail
+        if (detail) {
+          toast.error(detail)
+        } else {
+          toast.error('註冊失敗，請檢查輸入格式')
+        }
       }
     }
 

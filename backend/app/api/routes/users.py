@@ -51,6 +51,10 @@ def update_current_user(
             )
         current_user.email = user_update.email
 
+    # 更新個人簡介
+    if user_update.bio is not None:
+        current_user.bio = user_update.bio
+
     # 更新密碼
     if user_update.password:
         current_user.hashed_password = get_password_hash(user_update.password)

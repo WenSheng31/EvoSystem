@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 overflow-x-hidden">
     <Header :user="user" />
-    <main class="max-w-5xl mx-auto px-6 py-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       <div class="bg-white rounded p-6">
         <div class="flex items-center gap-4">
           <div
@@ -22,6 +22,9 @@
               歡迎使用本系統，{{ user?.username }}
             </h2>
             <p class="text-sm text-gray-600 mt-1">{{ currentDateTime }}</p>
+            <p v-if="user?.bio" class="text-sm text-gray-700 mt-2">
+              {{ user.bio }}
+            </p>
           </div>
         </div>
       </div>

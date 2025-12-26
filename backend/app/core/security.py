@@ -54,4 +54,22 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception
+
+    # 檢查帳號是否啟用
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="帳號已被停用"
+        )
+
     return user
+
+
+def get_admin_user(current_user = Depends(get_current_user)):
+    """獲取管理員用戶（權限檢查）"""
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="需要管理員權限"
+        )
+    return current_user

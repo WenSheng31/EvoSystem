@@ -4,12 +4,12 @@
       <h2 class="text-xl font-semibold mb-6 text-gray-900 text-center">登入</h2>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block mb-1.5 text-gray-700 text-sm font-medium">用戶名</label>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">郵箱</label>
           <input
-            v-model="formData.username"
-            type="text"
+            v-model="formData.email"
+            type="email"
             required
-            placeholder="請輸入用戶名"
+            placeholder="請輸入郵箱"
             class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
@@ -47,7 +47,7 @@ export default {
     const router = useRouter()
     const toast = useToast()
     const formData = ref({
-      username: '',
+      email: '',
       password: ''
     })
 

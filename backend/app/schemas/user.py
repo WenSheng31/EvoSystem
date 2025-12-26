@@ -8,15 +8,24 @@ class UserBase(BaseModel):
     """用戶基礎 Schema"""
     username: str
     email: EmailStr
+    bio: Optional[str] = None
 
     @field_validator('username')
     @classmethod
     def validate_username(cls, v):
         """驗證用戶名格式"""
-        if len(v) < 3 or len(v) > 20:
-            raise ValueError('用戶名長度必須在 3-20 個字符之間')
+        if len(v) > 20:
+            raise ValueError('用戶名最多 20 個字符')
         if not re.match(r'^[a-zA-Z0-9_\u4e00-\u9fa5]+$', v):
             raise ValueError('用戶名只能包含字母、數字、下劃線和中文')
+        return v
+
+    @field_validator('bio')
+    @classmethod
+    def validate_bio(cls, v):
+        """驗證個人簡介長度"""
+        if v is not None and len(v) > 200:
+            raise ValueError('個人簡介最多 200 個字符')
         return v
 
 
@@ -41,7 +50,7 @@ class UserCreate(UserBase):
 
 class UserLogin(BaseModel):
     """用戶登入"""
-    username: str
+    email: EmailStr
     password: str
 
 
@@ -49,6 +58,7 @@ class UserUpdate(BaseModel):
     """用戶更新"""
     username: Optional[str] = None
     email: Optional[EmailStr] = None
+    bio: Optional[str] = None
     password: Optional[str] = None
 
     @field_validator('username')
@@ -57,10 +67,18 @@ class UserUpdate(BaseModel):
         """驗證用戶名格式"""
         if v is None:
             return v
-        if len(v) < 3 or len(v) > 20:
-            raise ValueError('用戶名長度必須在 3-20 個字符之間')
+        if len(v) > 20:
+            raise ValueError('用戶名最多 20 個字符')
         if not re.match(r'^[a-zA-Z0-9_\u4e00-\u9fa5]+$', v):
             raise ValueError('用戶名只能包含字母、數字、下劃線和中文')
+        return v
+
+    @field_validator('bio')
+    @classmethod
+    def validate_bio(cls, v):
+        """驗證個人簡介長度"""
+        if v is not None and len(v) > 200:
+            raise ValueError('個人簡介最多 200 個字符')
         return v
 
     @field_validator('password')
@@ -84,6 +102,9 @@ class UserResponse(UserBase):
     """用戶回應"""
     id: int
     avatar: Optional[str] = None
+    bio: Optional[str] = None
+    role: str = "user"
+    is_active: bool = True
     created_at: datetime
     updated_at: Optional[datetime] = None
 

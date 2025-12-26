@@ -45,13 +45,20 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 def login(credentials: UserLogin, db: Session = Depends(get_db)):
     """用戶登入"""
-    user = db.query(User).filter(User.username == credentials.username).first()
+    user = db.query(User).filter(User.email == credentials.email).first()
 
     if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用戶名或密碼錯誤",
+            detail="郵箱或密碼錯誤",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # 檢查帳號是否啟用
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="帳號已被停用，請聯繫管理員"
         )
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
