@@ -114,6 +114,18 @@
           </table>
         </div>
       </div>
+
+    <!-- 確認對話框 -->
+    <ConfirmDialog
+      :isOpen="isDialogOpen"
+      title="確認刪除"
+      :message="`確定要刪除用戶 ${selectedUser?.username} 嗎？此操作無法撤銷！`"
+      confirmText="刪除"
+      cancelText="取消"
+      type="danger"
+      @confirm="handleDeleteConfirm"
+      @cancel="handleDeleteCancel"
+    />
   </div>
 </template>
 
@@ -125,14 +137,20 @@ import { useUser } from "../composables/useUser";
 import { useToast } from "../composables/useToast";
 import { ROUTES } from "../config/constants";
 import { getAvatarUrl } from "../utils/avatar";
+import ConfirmDialog from "../components/ConfirmDialog.vue";
 
 export default {
   name: "Admin",
+  components: {
+    ConfirmDialog,
+  },
   setup() {
     const router = useRouter();
     const { user, fetchUserInfo } = useUser();
     const toast = useToast();
     const users = ref([]);
+    const isDialogOpen = ref(false);
+    const selectedUser = ref(null);
 
     const loadData = async () => {
       try {
@@ -171,23 +189,30 @@ export default {
     };
 
     const confirmDelete = (targetUser) => {
-      if (
-        confirm(`確定要刪除用戶 ${targetUser.username} 嗎？此操作無法撤銷！`)
-      ) {
-        deleteUser(targetUser);
-      }
+      selectedUser.value = targetUser;
+      isDialogOpen.value = true;
     };
 
-    const deleteUser = async (targetUser) => {
+    const handleDeleteConfirm = async () => {
+      if (!selectedUser.value) return;
+
       try {
-        await authAPI.deleteUser(targetUser.id);
+        await authAPI.deleteUser(selectedUser.value.id);
         // 從列表中移除
-        users.value = users.value.filter((u) => u.id !== targetUser.id);
+        users.value = users.value.filter((u) => u.id !== selectedUser.value.id);
         toast.success("用戶已刪除");
       } catch (error) {
         console.error("刪除失敗:", error);
         toast.error(error.response?.data?.detail || "刪除失敗");
+      } finally {
+        isDialogOpen.value = false;
+        selectedUser.value = null;
       }
+    };
+
+    const handleDeleteCancel = () => {
+      isDialogOpen.value = false;
+      selectedUser.value = null;
     };
 
     const formatDate = (dateString) => {
@@ -210,8 +235,12 @@ export default {
       users,
       toggleActive,
       confirmDelete,
+      handleDeleteConfirm,
+      handleDeleteCancel,
       formatDate,
       getAvatarUrl,
+      isDialogOpen,
+      selectedUser,
     };
   },
 };

@@ -14,9 +14,13 @@
     />
 
     <!-- Main Content -->
-    <main class="pt-16 lg:pl-64 min-h-screen">
+    <main class="pt-16 lg:pt-0 lg:pl-64 min-h-screen">
       <div class="p-6 lg:p-8">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </Transition>
+        </router-view>
       </div>
     </main>
   </div>
@@ -49,3 +53,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
