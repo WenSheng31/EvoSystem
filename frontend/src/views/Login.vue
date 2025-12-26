@@ -1,15 +1,18 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-50">
     <div class="bg-white p-8 w-full max-w-sm rounded">
-      <h2 class="text-xl font-semibold mb-6 text-gray-900 text-center">登入</h2>
+      <div class="flex flex-col items-center mb-6">
+        <img src="/logo/main_nobk_b.png" alt="EvoSystem Logo" class="h-16 mb-4" />
+        <h2 class="text-xl font-semibold text-gray-900">登入 EvoSystem</h2>
+      </div>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block mb-1.5 text-gray-700 text-sm font-medium">郵箱</label>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">電子郵件</label>
           <input
             v-model="formData.email"
             type="email"
             required
-            placeholder="請輸入郵箱"
+            placeholder="請輸入電子郵件"
             class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
