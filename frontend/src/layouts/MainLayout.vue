@@ -23,23 +23,39 @@
         </router-view>
       </div>
     </main>
+
+    <!-- 全局確認對話框 -->
+    <ConfirmDialog
+      :isOpen="dialogState.isOpen"
+      :title="dialogState.title"
+      :message="dialogState.message"
+      :confirmText="dialogState.confirmText"
+      :cancelText="dialogState.cancelText"
+      :type="dialogState.type"
+      @confirm="handleConfirm"
+      @cancel="handleCancel"
+    />
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import { useUser } from '../composables/useUser'
+import { useConfirmDialog } from '../composables/useConfirmDialog'
 import AppHeader from '../components/AppHeader.vue'
 import AppSidebar from '../components/AppSidebar.vue'
+import ConfirmDialog from '../components/ConfirmDialog.vue'
 
 export default {
   name: 'MainLayout',
   components: {
     AppHeader,
-    AppSidebar
+    AppSidebar,
+    ConfirmDialog
   },
   setup() {
     const { user, fetchUserInfo } = useUser()
+    const { dialogState, handleConfirm, handleCancel } = useConfirmDialog()
     const sidebarOpen = ref(false)
 
     onMounted(() => {
@@ -48,7 +64,10 @@ export default {
 
     return {
       user,
-      sidebarOpen
+      sidebarOpen,
+      dialogState,
+      handleConfirm,
+      handleCancel
     }
   }
 }
