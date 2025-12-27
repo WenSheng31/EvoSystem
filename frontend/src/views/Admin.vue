@@ -15,7 +15,7 @@
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
               >
-                郵箱
+                電子郵件
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"

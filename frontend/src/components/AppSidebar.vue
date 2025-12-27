@@ -69,7 +69,7 @@
 <script>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { Home, Settings, Users } from "lucide-vue-next";
+import { Home, Settings, Users, FileText } from "lucide-vue-next";
 import { ROUTES } from "../config/constants";
 import AvatarImage from "./AvatarImage.vue";
 
@@ -96,6 +96,7 @@ export default {
       const items = [
         { path: ROUTES.HOME, name: "首頁", icon: Home },
         { path: ROUTES.ACCOUNT, name: "帳號管理", icon: Settings },
+        { path: ROUTES.TEST, name: "測試頁面", icon: FileText },
       ];
 
       if (props.user?.role === "admin") {

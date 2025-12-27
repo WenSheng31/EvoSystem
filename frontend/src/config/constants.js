@@ -22,7 +22,8 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   ACCOUNT: '/account',
-  ADMIN: '/admin'
+  ADMIN: '/admin',
+  TEST: '/test'
 }
 
 // 文件上傳限制
