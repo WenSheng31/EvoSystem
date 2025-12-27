@@ -46,7 +46,6 @@ class PasswordValidator:
 
 class UsernameValidator:
     """用戶名驗證器"""
-    MIN_LENGTH = 3
     MAX_LENGTH = 20
     PATTERN = r'^[\w\u4e00-\u9fa5]+$'
 
@@ -56,7 +55,7 @@ class UsernameValidator:
         驗證用戶名
 
         規則：
-        - 長度：3-20 個字符
+        - 長度：1-20 個字符
         - 只允許字母、數字、下劃線和中文
 
         Args:
@@ -68,8 +67,8 @@ class UsernameValidator:
         Raises:
             ValueError: 用戶名不符合要求
         """
-        if len(username) < UsernameValidator.MIN_LENGTH:
-            raise ValueError(f'用戶名至少需要 {UsernameValidator.MIN_LENGTH} 個字符')
+        if not username or len(username.strip()) == 0:
+            raise ValueError('用戶名不能為空')
 
         if len(username) > UsernameValidator.MAX_LENGTH:
             raise ValueError(f'用戶名最多 {UsernameValidator.MAX_LENGTH} 個字符')
