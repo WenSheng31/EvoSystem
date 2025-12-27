@@ -33,6 +33,16 @@
             class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
+        <div>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">確認密碼</label>
+          <input
+            v-model="formData.confirmPassword"
+            type="password"
+            required
+            placeholder="請再次輸入密碼"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+          />
+        </div>
         <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
           註冊
         </button>
@@ -59,7 +69,8 @@ export default {
     const formData = ref({
       username: '',
       email: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     })
 
     const handleRegister = async () => {
@@ -69,8 +80,16 @@ export default {
         return
       }
 
+      // 驗證兩次密碼是否一致
+      if (formData.value.password !== formData.value.confirmPassword) {
+        toast.error('兩次輸入的密碼不一致')
+        return
+      }
+
       try {
-        await authAPI.register(formData.value)
+        // 只發送必要的字段到後端
+        const { username, email, password } = formData.value
+        await authAPI.register({ username, email, password })
         toast.success('註冊成功！即將跳轉到登入頁面...')
         setTimeout(() => {
           router.push(ROUTES.LOGIN)
