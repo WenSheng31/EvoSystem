@@ -18,7 +18,7 @@
         </div>
         <div>
           <h2 class="text-xl font-medium text-gray-900">
-            歡迎使用本系統，{{ user?.username }}
+            歡迎使用EvoSystem，{{ user?.username }}
           </h2>
           <p class="text-sm text-gray-600 mt-1">{{ currentDateTime }}</p>
         </div>
