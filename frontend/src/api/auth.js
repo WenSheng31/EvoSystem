@@ -1,6 +1,7 @@
 import axios from 'axios'
 import router from '../router'
 import { API_CONFIG, ROUTES } from '../config/constants'
+import { toastState } from '../composables/useToast'
 
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -39,7 +40,17 @@ api.interceptors.response.use(
       // 只在不是登入/註冊頁面時才跳轉
       const currentPath = router.currentRoute.value.path
       if (currentPath !== ROUTES.LOGIN && currentPath !== ROUTES.REGISTER) {
-        router.push(ROUTES.LOGIN)
+        // 顯示提示訊息
+        toastState.toasts.push({
+          id: Date.now(),
+          message: '登入已過期，請重新登入',
+          type: 'error'
+        })
+
+        // 延遲跳轉，讓用戶看到提示
+        setTimeout(() => {
+          router.push(ROUTES.LOGIN)
+        }, 500)
       }
     }
     return Promise.reject(error)
