@@ -35,6 +35,21 @@
       @confirm="handleConfirm"
       @cancel="handleCancel"
     />
+
+    <!-- 全局輸入對話框 -->
+    <InputDialog
+      :isOpen="inputDialogState.isOpen"
+      :title="inputDialogState.title"
+      :message="inputDialogState.message"
+      :inputLabel="inputDialogState.inputLabel"
+      :inputPlaceholder="inputDialogState.inputPlaceholder"
+      :inputType="inputDialogState.inputType"
+      :hint="inputDialogState.hint"
+      :confirmText="inputDialogState.confirmText"
+      :cancelText="inputDialogState.cancelText"
+      @confirm="handleInputConfirm"
+      @cancel="handleInputCancel"
+    />
   </div>
 </template>
 
@@ -42,20 +57,24 @@
 import { ref, onMounted } from 'vue'
 import { useUser } from '../composables/useUser'
 import { useConfirmDialog } from '../composables/useConfirmDialog'
+import { useInputDialog } from '../composables/useInputDialog'
 import AppHeader from '../components/AppHeader.vue'
 import AppSidebar from '../components/AppSidebar.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import InputDialog from '../components/InputDialog.vue'
 
 export default {
   name: 'MainLayout',
   components: {
     AppHeader,
     AppSidebar,
-    ConfirmDialog
+    ConfirmDialog,
+    InputDialog
   },
   setup() {
     const { user, fetchUserInfo } = useUser()
     const { dialogState, handleConfirm, handleCancel } = useConfirmDialog()
+    const { inputDialogState, handleConfirm: handleInputConfirm, handleCancel: handleInputCancel } = useInputDialog()
     const sidebarOpen = ref(false)
 
     onMounted(() => {
@@ -67,7 +86,10 @@ export default {
       sidebarOpen,
       dialogState,
       handleConfirm,
-      handleCancel
+      handleCancel,
+      inputDialogState,
+      handleInputConfirm,
+      handleInputCancel
     }
   }
 }

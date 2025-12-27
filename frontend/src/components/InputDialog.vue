@@ -21,8 +21,22 @@
 
           <!-- 內容 -->
           <div class="mb-6">
-            <p class="text-sm text-gray-600">
+            <p v-if="message" class="text-sm text-gray-600 mb-4">
               {{ message }}
+            </p>
+
+            <label v-if="inputLabel" class="block text-sm font-medium text-gray-700 mb-2">
+              {{ inputLabel }}
+            </label>
+            <input
+              v-model="inputValue"
+              :type="inputType"
+              :placeholder="inputPlaceholder"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              @keyup.enter="handleConfirm"
+            />
+            <p v-if="hint" class="mt-2 text-xs text-gray-500">
+              {{ hint }}
             </p>
           </div>
 
@@ -36,8 +50,7 @@
             </button>
             <button
               @click="handleConfirm"
-              :class="confirmButtonClass"
-              class="px-4 py-2 text-sm font-medium text-white rounded transition-colors"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors"
             >
               {{ confirmText }}
             </button>
@@ -49,8 +62,10 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue'
+
 export default {
-  name: "ConfirmDialog",
+  name: "InputDialog",
   props: {
     isOpen: {
       type: Boolean,
@@ -58,11 +73,28 @@ export default {
     },
     title: {
       type: String,
-      default: "確認操作",
+      default: "輸入",
     },
     message: {
       type: String,
-      required: true,
+      default: "",
+    },
+    inputLabel: {
+      type: String,
+      default: "",
+    },
+    inputPlaceholder: {
+      type: String,
+      default: "請輸入",
+    },
+    inputType: {
+      type: String,
+      default: "text",
+      validator: (value) => ["text", "password", "email", "number", "tel", "url"].includes(value),
+    },
+    hint: {
+      type: String,
+      default: "",
     },
     confirmText: {
       type: String,
@@ -72,33 +104,32 @@ export default {
       type: String,
       default: "取消",
     },
-    type: {
-      type: String,
-      default: "danger", // danger, primary, warning
-      validator: (value) => ["danger", "primary", "warning"].includes(value),
-    },
   },
   emits: ["confirm", "cancel"],
-  computed: {
-    confirmButtonClass() {
-      const classes = {
-        danger: "bg-red-600 hover:bg-red-700",
-        primary: "bg-gray-900 hover:bg-gray-800",
-        warning: "bg-orange-600 hover:bg-orange-700",
-      };
-      return classes[this.type];
-    },
-  },
   setup(props, { emit }) {
+    const inputValue = ref('')
+
+    // 當對話框關閉時清空輸入
+    watch(() => props.isOpen, (newVal) => {
+      if (!newVal) {
+        inputValue.value = ''
+      }
+    })
+
     const handleConfirm = () => {
-      emit("confirm");
+      if (!props.loading) {
+        emit("confirm", inputValue.value);
+      }
     };
 
     const handleCancel = () => {
-      emit("cancel");
+      if (!props.loading) {
+        emit("cancel");
+      }
     };
 
     return {
+      inputValue,
       handleConfirm,
       handleCancel,
     };

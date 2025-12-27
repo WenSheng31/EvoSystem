@@ -6,17 +6,11 @@
       <div class="bg-white p-6 rounded mb-6">
         <h2 class="text-base font-medium text-gray-900 mb-4">大頭貼</h2>
         <div class="flex items-center gap-6">
-          <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-            <img
-              v-if="user?.avatar"
-              :src="getAvatarUrl(user.avatar)"
-              alt="Avatar"
-              class="w-full h-full object-cover"
-            />
-            <span v-else class="text-gray-600 font-medium text-xl">
-              {{ user?.username.charAt(0).toUpperCase() }}
-            </span>
-          </div>
+          <AvatarImage
+            :avatar="user?.avatar"
+            :username="user?.username"
+            :size="80"
+          />
           <div>
             <input
               ref="fileInput"
@@ -90,10 +84,13 @@ import { ref, onMounted } from 'vue'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
 import { useUser } from '../composables/useUser'
-import { getAvatarUrl } from '../utils/avatar'
+import AvatarImage from '../components/AvatarImage.vue'
 
 export default {
   name: 'Account',
+  components: {
+    AvatarImage
+  },
   setup() {
     const toast = useToast()
     const { user, fetchUserInfo, updateUser } = useUser()
@@ -171,7 +168,6 @@ export default {
       formData,
       uploadingAvatar,
       updatingProfile,
-      getAvatarUrl,
       handleAvatarUpload,
       handleUpdateProfile
     }

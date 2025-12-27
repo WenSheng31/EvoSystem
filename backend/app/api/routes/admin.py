@@ -4,10 +4,11 @@ from typing import List
 from pathlib import Path
 
 from ...core.database import get_db
-from ...core.security import get_admin_user
+from ...core.security import get_admin_user, get_password_hash
 from ...core.config import settings
+from ...core.file_utils import AvatarManager
 from ...models.user import User
-from ...schemas.user import UserResponse
+from ...schemas.user import UserResponse, AdminPasswordReset
 
 router = APIRouter()
 
@@ -93,20 +94,40 @@ def delete_user(
 
     # 刪除用戶頭像文件
     if user.avatar:
-        try:
-            if user.avatar.startswith("backend/uploads/avatars/"):
-                filename = user.avatar.split("/")[-1]
-                if ".." not in filename and "/" not in filename and "\\" not in filename:
-                    avatar_path = UPLOAD_DIR / filename
-                    if avatar_path.resolve().parent == UPLOAD_DIR.resolve():
-                        if avatar_path.exists() and avatar_path.is_file():
-                            avatar_path.unlink()
-        except (ValueError, OSError):
-            # 忽略刪除錯誤，繼續刪除用戶
-            pass
+        AvatarManager.delete_avatar(user.avatar, UPLOAD_DIR)
 
     # 刪除用戶
     db.delete(user)
     db.commit()
 
     return {"message": f"用戶 {user.username} 已被刪除"}
+
+
+@router.patch("/users/{user_id}/reset-password")
+def reset_user_password(
+    user_id: int,
+    password_data: AdminPasswordReset,
+    admin: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """重置用戶密碼（僅管理員）"""
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="用戶不存在"
+        )
+
+    # 不能重置自己的密碼
+    if user.id == admin.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="不能重置自己的密碼，請使用正常的修改密碼流程"
+        )
+
+    # 加密並更新密碼
+    user.hashed_password = get_password_hash(password_data.new_password)
+    db.commit()
+
+    return {"message": f"用戶 {user.username} 的密碼已重置"}

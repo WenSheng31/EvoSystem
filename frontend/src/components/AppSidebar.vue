@@ -41,19 +41,11 @@
       <div class="p-4">
         <!-- 用戶資訊 -->
         <div class="flex items-center gap-3 mb-3">
-          <div
-            class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0"
-          >
-            <img
-              v-if="user?.avatar"
-              :src="getAvatarUrl(user.avatar)"
-              alt="Avatar"
-              class="w-full h-full object-cover"
-            />
-            <span v-else class="text-gray-600 font-medium text-sm">
-              {{ user?.username?.charAt(0).toUpperCase() }}
-            </span>
-          </div>
+          <AvatarImage
+            :avatar="user?.avatar"
+            :username="user?.username"
+            :size="40"
+          />
           <div class="flex-1 min-w-0">
             <div class="text-sm font-medium text-gray-900 truncate">
               {{ user?.username }}
@@ -79,10 +71,13 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { Home, Settings, Users } from "lucide-vue-next";
 import { ROUTES } from "../config/constants";
-import { getAvatarUrl } from "../utils/avatar";
+import AvatarImage from "./AvatarImage.vue";
 
 export default {
   name: "AppSidebar",
+  components: {
+    AvatarImage
+  },
   props: {
     user: {
       type: Object,
@@ -123,9 +118,8 @@ export default {
     return {
       menuItems,
       isActive,
-      getAvatarUrl,
       handleLogout,
-      ROUTES,
+      ROUTES
     };
   },
 };

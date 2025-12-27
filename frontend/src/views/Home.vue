@@ -3,19 +3,11 @@
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">首頁</h1>
     <div class="bg-white rounded p-6">
       <div class="flex items-center gap-4">
-        <div
-          class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
-        >
-          <img
-            v-if="user?.avatar"
-            :src="getAvatarUrl(user.avatar)"
-            alt="Avatar"
-            class="w-full h-full object-cover"
-          />
-          <span v-else class="text-gray-600 font-medium text-2xl">
-            {{ user?.username.charAt(0).toUpperCase() }}
-          </span>
-        </div>
+        <AvatarImage
+          :avatar="user?.avatar"
+          :username="user?.username"
+          :size="64"
+        />
         <div>
           <h2 class="text-xl font-medium text-gray-900">
             歡迎使用EvoSystem，{{ user?.username }}
@@ -30,10 +22,13 @@
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useUser } from "../composables/useUser";
-import { getAvatarUrl } from "../utils/avatar";
+import AvatarImage from "../components/AvatarImage.vue";
 
 export default {
   name: "Home",
+  components: {
+    AvatarImage
+  },
   setup() {
     const { user, fetchUserInfo } = useUser();
     const currentDateTime = ref("");
@@ -64,8 +59,7 @@ export default {
 
     return {
       user,
-      currentDateTime,
-      getAvatarUrl,
+      currentDateTime
     };
   },
 };

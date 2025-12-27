@@ -14,18 +14,15 @@ router = APIRouter()
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     """用戶註冊"""
-    # 檢查用戶名
-    if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="用戶名已被使用"
-        )
+    # 檢查用戶名和郵箱是否已被使用
+    # 為了安全，不暴露具體是哪個字段重複
+    existing_username = db.query(User).filter(User.username == user.username).first()
+    existing_email = db.query(User).filter(User.email == user.email).first()
 
-    # 檢查郵箱
-    if db.query(User).filter(User.email == user.email).first():
+    if existing_username or existing_email:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="郵箱已被使用"
+            detail="用戶名或郵箱已被使用"
         )
 
     # 創建用戶

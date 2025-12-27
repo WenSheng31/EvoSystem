@@ -15,8 +15,15 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "會員系統 API"
     API_V1_PREFIX: str = "/api"
 
-    # CORS（開發環境允許所有來源，生產環境需要設定具體網址）
-    BACKEND_CORS_ORIGINS: list = ["*"]
+    # CORS（只允許特定來源，提升安全性）
+    # 開發環境：localhost 的不同端口
+    # 生產環境：請在 .env 文件中覆蓋此設定為實際域名
+    BACKEND_CORS_ORIGINS: list = [
+        "http://localhost:5173",  # Vite 開發服務器
+        "http://localhost:3000",  # 備用端口
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+    ]
 
     # 檔案上傳
     MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB

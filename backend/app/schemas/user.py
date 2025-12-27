@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import datetime
 from typing import Optional
-import re
+from ..core.validators import PasswordValidator, UsernameValidator
 
 
 class UserBase(BaseModel):
@@ -14,11 +14,7 @@ class UserBase(BaseModel):
     @classmethod
     def validate_username(cls, v):
         """驗證用戶名格式"""
-        if len(v) > 20:
-            raise ValueError('用戶名最多 20 個字符')
-        if not re.match(r'^[a-zA-Z0-9_\u4e00-\u9fa5]+$', v):
-            raise ValueError('用戶名只能包含字母、數字、下劃線和中文')
-        return v
+        return UsernameValidator.validate(v)
 
     @field_validator('bio')
     @classmethod
@@ -37,15 +33,7 @@ class UserCreate(UserBase):
     @classmethod
     def validate_password(cls, v):
         """驗證密碼強度"""
-        if len(v) < 8:
-            raise ValueError('密碼至少需要 8 個字符')
-        if len(v) > 50:
-            raise ValueError('密碼最多 50 個字符')
-        if not re.search(r'[A-Za-z]', v):
-            raise ValueError('密碼必須包含至少一個字母')
-        if not re.search(r'\d', v):
-            raise ValueError('密碼必須包含至少一個數字')
-        return v
+        return PasswordValidator.validate(v)
 
 
 class UserLogin(BaseModel):
@@ -68,11 +56,7 @@ class UserUpdate(BaseModel):
         """驗證用戶名格式"""
         if v is None:
             return v
-        if len(v) > 20:
-            raise ValueError('用戶名最多 20 個字符')
-        if not re.match(r'^[a-zA-Z0-9_\u4e00-\u9fa5]+$', v):
-            raise ValueError('用戶名只能包含字母、數字、下劃線和中文')
-        return v
+        return UsernameValidator.validate(v)
 
     @field_validator('bio')
     @classmethod
@@ -88,15 +72,7 @@ class UserUpdate(BaseModel):
         """驗證密碼強度"""
         if v is None:
             return v
-        if len(v) < 8:
-            raise ValueError('密碼至少需要 8 個字符')
-        if len(v) > 50:
-            raise ValueError('密碼最多 50 個字符')
-        if not re.search(r'[A-Za-z]', v):
-            raise ValueError('密碼必須包含至少一個字母')
-        if not re.search(r'\d', v):
-            raise ValueError('密碼必須包含至少一個數字')
-        return v
+        return PasswordValidator.validate(v)
 
 
 class UserResponse(UserBase):
@@ -122,3 +98,14 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Token 資料"""
     username: Optional[str] = None
+
+
+class AdminPasswordReset(BaseModel):
+    """管理員重置用戶密碼"""
+    new_password: str
+
+    @field_validator('new_password')
+    @classmethod
+    def validate_password(cls, v):
+        """驗證密碼強度"""
+        return PasswordValidator.validate(v)

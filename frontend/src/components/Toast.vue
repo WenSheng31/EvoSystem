@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3">
+  <div class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3">
     <transition-group name="fade">
       <div
         v-for="toast in toasts"
