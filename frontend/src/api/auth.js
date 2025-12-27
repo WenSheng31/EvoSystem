@@ -47,10 +47,8 @@ api.interceptors.response.use(
           type: 'error'
         })
 
-        // 延遲跳轉，讓用戶看到提示
-        setTimeout(() => {
-          router.push(ROUTES.LOGIN)
-        }, 500)
+        // 直接跳轉到登入頁
+        router.push(ROUTES.LOGIN)
       }
     }
     return Promise.reject(error)
