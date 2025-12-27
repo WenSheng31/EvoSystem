@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">帳號管理</h1>
 
       <!-- 頭像上傳 -->
-      <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+      <div class="bg-white p-6 rounded-lg border border-gray-200 overflow-hidden mb-6">
         <h2 class="text-base font-medium text-gray-900 mb-4">大頭貼</h2>
         <div class="flex items-center gap-6">
           <AvatarImage
@@ -32,7 +32,7 @@
       </div>
 
       <!-- 帳號資訊 -->
-      <div class="bg-white p-6 rounded-lg border border-gray-200">
+      <div class="bg-white p-6 rounded-lg border border-gray-200 overflow-hidden">
         <h2 class="text-base font-medium text-gray-900 mb-4">帳號資訊</h2>
         <form @submit.prevent="handleUpdateProfile" class="space-y-4">
           <div>

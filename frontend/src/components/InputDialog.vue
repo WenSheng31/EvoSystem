@@ -25,7 +25,7 @@
               v-model="inputValue"
               :type="type"
               :placeholder="placeholder"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
               @keyup.enter="handleConfirm"
             />
             <p v-if="hint" class="mt-2 text-xs text-gray-500">
@@ -43,7 +43,7 @@
             </button>
             <button
               @click="handleConfirm"
-              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              class="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
             >
               確認
             </button>

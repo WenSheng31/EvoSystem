@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">用戶管理</h1>
 
-    <div class="bg-white rounded-lg border border-gray-200">
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full min-w-[1000px]">
           <thead class="bg-gray-50 border-b border-gray-200">

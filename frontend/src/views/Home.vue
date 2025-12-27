@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">首頁</h1>
-    <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden p-6">
       <div class="flex items-center gap-4">
         <AvatarImage
           :avatar="user?.avatar"

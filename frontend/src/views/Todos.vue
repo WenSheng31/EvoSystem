@@ -22,7 +22,7 @@
     </form>
 
     <!-- 待辦事項列表 -->
-    <div class="bg-white rounded-lg border border-gray-200">
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <!-- 載入中狀態 -->
       <div v-if="isLoading" class="p-8 text-center text-gray-500">
         載入中...
