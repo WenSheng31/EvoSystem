@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">待辦事項</h1>
 
     <!-- 新增待辦事項表單 -->
-    <form @submit.prevent="handleCreateTodo" class="flex gap-3 mb-6">
+    <form @submit.prevent="handleCreateTodo" class="flex flex-col sm:flex-row gap-3 mb-6">
       <input
         v-model="newTodoTitle"
         type="text"
@@ -15,7 +15,7 @@
       <button
         type="submit"
         :disabled="!newTodoTitle.trim() || isCreating"
-        class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
       >
         {{ isCreating ? '新增中...' : '新增' }}
       </button>
