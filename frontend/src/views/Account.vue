@@ -81,7 +81,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { authAPI } from '../api/auth'
+import { userAPI } from '../api/user'
 import { useToast } from '../composables/useToast'
 import { useUser } from '../composables/useUser'
 import AvatarImage from '../components/AvatarImage.vue'
@@ -120,11 +120,10 @@ export default {
 
       uploadingAvatar.value = true
       try {
-        const response = await authAPI.uploadAvatar(file)
+        const response = await userAPI.uploadAvatar(file)
         updateUser(response.data)
         toast.success('頭像更新成功')
       } catch (error) {
-        console.error('上傳頭像失敗:', error)
         toast.error(error.response?.data?.detail || '上傳失敗')
       } finally {
         uploadingAvatar.value = false
@@ -147,11 +146,10 @@ export default {
           bio: formData.value.bio
         }
 
-        const response = await authAPI.updateProfile(updateData)
+        const response = await userAPI.updateProfile(updateData)
         updateUser(response.data)
         toast.success('資料更新成功')
       } catch (error) {
-        console.error('更新失敗:', error)
         toast.error(error.response?.data?.detail || '更新失敗')
       } finally {
         updatingProfile.value = false

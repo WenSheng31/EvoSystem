@@ -41,6 +41,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
+import { userAPI } from '../api/user'
 import { useToast } from '../composables/useToast'
 import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
 
@@ -60,7 +61,7 @@ export default {
         localStorage.setItem('token', response.data.access_token)
 
         // 獲取用戶信息並存儲角色
-        const userInfo = await authAPI.getCurrentUser()
+        const userInfo = await userAPI.getCurrentUser()
         localStorage.setItem('userRole', userInfo.data.role)
 
         toast.success('登入成功')

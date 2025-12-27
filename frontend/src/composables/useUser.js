@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { authAPI } from '../api/auth'
+import { userAPI } from '../api/user'
 
 /**
  * 用戶狀態管理 Composable
@@ -17,12 +17,11 @@ export function useUser() {
     error.value = null
 
     try {
-      const response = await authAPI.getCurrentUser()
+      const response = await userAPI.getCurrentUser()
       user.value = response.data
       return response.data
     } catch (err) {
       error.value = err
-      console.error('獲取用戶資訊失敗:', err)
       throw err
     } finally {
       loading.value = false

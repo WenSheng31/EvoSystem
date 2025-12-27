@@ -121,7 +121,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { authAPI } from "../api/auth";
+import { adminAPI } from "../api/admin";
 import { useUser } from "../composables/useUser";
 import { useToast } from "../composables/useToast";
 import { useConfirmDialog } from "../composables/useConfirmDialog";
@@ -155,17 +155,16 @@ export default {
         }
 
         // 獲取所有用戶
-        const response = await authAPI.getAllUsers();
+        const response = await adminAPI.getAllUsers();
         users.value = response.data;
       } catch (error) {
-        console.error("載入失敗:", error);
         toast.error("載入用戶列表失敗");
       }
     };
 
     const toggleActive = async (targetUser) => {
       try {
-        const response = await authAPI.toggleUserActive(targetUser.id);
+        const response = await adminAPI.toggleUserActive(targetUser.id);
         // 更新本地數據
         const index = users.value.findIndex((u) => u.id === targetUser.id);
         if (index !== -1) {
@@ -173,7 +172,6 @@ export default {
         }
         toast.success(response.data.is_active ? "已啟用用戶" : "已停用用戶");
       } catch (error) {
-        console.error("操作失敗:", error);
         toast.error(error.response?.data?.detail || "操作失敗");
       }
     };
@@ -187,11 +185,10 @@ export default {
 
       if (result) {
         try {
-          await authAPI.deleteUser(targetUser.id);
+          await adminAPI.deleteUser(targetUser.id);
           users.value = users.value.filter((u) => u.id !== targetUser.id);
           toast.success("用戶已刪除");
         } catch (error) {
-          console.error("刪除失敗:", error);
           toast.error(error.response?.data?.detail || "刪除失敗");
         }
       }
@@ -243,10 +240,9 @@ export default {
 
       // 調用 API
       try {
-        await authAPI.resetUserPassword(targetUser.id, password);
+        await adminAPI.resetUserPassword(targetUser.id, password);
         toast.success("密碼重置成功");
       } catch (error) {
-        console.error("重置密碼失敗:", error);
         toast.error(error.response?.data?.detail || "重置密碼失敗");
       }
     };
