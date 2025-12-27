@@ -2,33 +2,33 @@
 
 一個現代化的全端會員管理系統，提供完整的用戶管理、個人資料編輯、待辦事項管理等功能。
 
-## ✨ 功能特色
+## 功能特色
 
 ### 用戶功能
-- 🔐 用戶註冊與登入（JWT 認證）
-- 👤 個人資料管理（用戶名、郵箱、個人簡介）
-- 🖼️ 頭像上傳（支援 JPG, PNG, GIF, WebP，最大 5MB）
-- ✅ 待辦事項管理
+- 用戶註冊與登入（JWT 認證）
+- 個人資料管理（用戶名、郵箱、個人簡介）
+- 頭像上傳（支援 JPG, PNG, GIF, WebP，最大 5MB）
+- 待辦事項管理
   - 新增、編輯、刪除待辦事項
   - 完成狀態切換
   - 行內編輯功能
   - 私有數據（每個用戶只能看到自己的待辦事項）
 
 ### 管理員功能
-- 👥 用戶管理
+- 用戶管理
   - 查看所有用戶列表
   - 啟用/停用用戶帳號
   - 重置用戶密碼
   - 刪除用戶
 
 ### UI/UX
-- 📱 完全響應式設計（支援桌面和行動裝置）
-- 🎨 統一的設計系統（Tailwind CSS）
-- 🔔 Toast 通知系統
-- ❓ 確認對話框
-- 🎯 直觀的側邊欄導航
+- 完全響應式設計（支援桌面和行動裝置）
+- 統一的設計系統（Tailwind CSS）
+- Toast 通知系統
+- 確認對話框
+- 直觀的側邊欄導航
 
-## 🛠️ 技術棧
+## 技術棧
 
 ### 後端
 - **框架**: FastAPI (Python)
@@ -47,7 +47,7 @@
 - **圖標**: lucide-vue-next
 - **狀態管理**: Composables (useUser, useToast, useConfirmDialog)
 
-## 📦 安裝與運行
+## 安裝與運行
 
 ### 前置要求
 - Python 3.8+
@@ -115,7 +115,7 @@ CREATE DATABASE evosystem;
 
 2. 後端會在首次啟動時自動建立所需的資料表（SQLAlchemy auto-create）
 
-## 📁 專案結構
+## 專案結構
 
 ```
 EvoSystem/
@@ -143,18 +143,18 @@ EvoSystem/
     └── package.json
 ```
 
-## 🚀 API 文檔
+## API 文檔
 
 後端啟動後，可以訪問以下 URL 查看 API 文檔：
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-## 🔑 預設帳號
+## 預設帳號
 
 系統需要手動註冊第一個用戶。要建立管理員帳號，需要在資料庫中手動將用戶的 `role` 欄位設為 `admin`。
 
-## 📝 主要路由
+## 主要路由
 
 ### 前端路由
 - `/login` - 登入頁
@@ -179,7 +179,7 @@ EvoSystem/
 - `POST /api/admin/users/{id}/reset-password` - 重置密碼（管理員）
 - `DELETE /api/admin/users/{id}` - 刪除用戶（管理員）
 
-## 🎨 設計規範
+## 設計規範
 
 - **邊框**: `border-gray-200` (主容器), `border-gray-300` (輸入框)
 - **圓角**: 統一使用 `rounded-lg` (0.5rem)
@@ -187,7 +187,7 @@ EvoSystem/
 - **字體**: 系統預設字體
 - **間距**: 遵循 Tailwind 的間距系統
 
-## 🔒 安全性
+## 安全性
 
 - 密碼使用 bcrypt 加密
 - JWT Token 30 分鐘過期
@@ -196,10 +196,10 @@ EvoSystem/
 - SQL Injection 防護（使用 ORM）
 - XSS 防護（Vue 自動轉義）
 
-## 📄 開發文檔
+## 開發文檔
 
 更詳細的開發指南請參考 `CLAUDE.md` 文件。
 
-## 📄 授權
+## 授權
 
 MIT License
