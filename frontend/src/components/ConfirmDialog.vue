@@ -32,14 +32,14 @@
               @click="handleCancel"
               class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
             >
-              {{ cancelText }}
+              取消
             </button>
             <button
               @click="handleConfirm"
               :class="confirmButtonClass"
               class="px-4 py-2 text-sm font-medium text-white rounded transition-colors"
             >
-              {{ confirmText }}
+              確認
             </button>
           </div>
         </div>
@@ -63,14 +63,6 @@ export default {
     message: {
       type: String,
       required: true,
-    },
-    confirmText: {
-      type: String,
-      default: "確認",
-    },
-    cancelText: {
-      type: String,
-      default: "取消",
     },
     type: {
       type: String,

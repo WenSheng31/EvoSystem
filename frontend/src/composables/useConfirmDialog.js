@@ -2,10 +2,8 @@ import { reactive } from 'vue'
 
 export const dialogState = reactive({
   isOpen: false,
-  title: '確認操作',
+  title: '',
   message: '',
-  confirmText: '確認',
-  cancelText: '取消',
   type: 'danger',
   resolve: null
 })
@@ -16,8 +14,6 @@ export function useConfirmDialog() {
       dialogState.isOpen = true
       dialogState.title = options.title || '確認操作'
       dialogState.message = options.message
-      dialogState.confirmText = options.confirmText || '確認'
-      dialogState.cancelText = options.cancelText || '取消'
       dialogState.type = options.type || 'danger'
       dialogState.resolve = resolve
     })

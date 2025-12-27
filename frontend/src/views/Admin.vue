@@ -182,7 +182,6 @@ export default {
       const result = await confirm({
         title: "確認刪除",
         message: `確定要刪除用戶 ${targetUser.username} 嗎？此操作無法撤銷！`,
-        confirmText: "刪除",
         type: "danger",
       });
 
@@ -217,11 +216,9 @@ export default {
       while (!isValid) {
         const result = await showInput({
           title: "重置用戶密碼",
-          inputLabel: "新密碼",
-          inputPlaceholder: "請輸入新密碼",
-          inputType: "password",
+          type: "password",
+          placeholder: "請輸入新密碼",
           hint: "密碼要求：8-50 個字符，需包含字母和數字",
-          confirmText: "確認重置",
         });
 
         // 用戶取消

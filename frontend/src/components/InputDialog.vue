@@ -21,17 +21,10 @@
 
           <!-- 內容 -->
           <div class="mb-6">
-            <p v-if="message" class="text-sm text-gray-600 mb-4">
-              {{ message }}
-            </p>
-
-            <label v-if="inputLabel" class="block text-sm font-medium text-gray-700 mb-2">
-              {{ inputLabel }}
-            </label>
             <input
               v-model="inputValue"
-              :type="inputType"
-              :placeholder="inputPlaceholder"
+              :type="type"
+              :placeholder="placeholder"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               @keyup.enter="handleConfirm"
             />
@@ -46,13 +39,13 @@
               @click="handleCancel"
               class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
             >
-              {{ cancelText }}
+              取消
             </button>
             <button
               @click="handleConfirm"
               class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors"
             >
-              {{ confirmText }}
+              確認
             </button>
           </div>
         </div>
@@ -75,34 +68,18 @@ export default {
       type: String,
       default: "輸入",
     },
-    message: {
-      type: String,
-      default: "",
-    },
-    inputLabel: {
-      type: String,
-      default: "",
-    },
-    inputPlaceholder: {
-      type: String,
-      default: "請輸入",
-    },
-    inputType: {
+    type: {
       type: String,
       default: "text",
       validator: (value) => ["text", "password", "email", "number", "tel", "url"].includes(value),
     },
+    placeholder: {
+      type: String,
+      default: "請輸入",
+    },
     hint: {
       type: String,
       default: "",
-    },
-    confirmText: {
-      type: String,
-      default: "確認",
-    },
-    cancelText: {
-      type: String,
-      default: "取消",
     },
   },
   emits: ["confirm", "cancel"],
@@ -117,15 +94,11 @@ export default {
     })
 
     const handleConfirm = () => {
-      if (!props.loading) {
-        emit("confirm", inputValue.value);
-      }
+      emit("confirm", inputValue.value);
     };
 
     const handleCancel = () => {
-      if (!props.loading) {
-        emit("cancel");
-      }
+      emit("cancel");
     };
 
     return {
