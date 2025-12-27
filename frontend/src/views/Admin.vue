@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">用戶管理</h1>
 
-    <div class="bg-white rounded border border-gray-200">
+    <div class="bg-white rounded-lg border border-gray-200">
       <div class="overflow-x-auto">
         <table class="w-full min-w-[1000px]">
           <thead class="bg-gray-50 border-b border-gray-200">
@@ -59,7 +59,7 @@
                       ? 'bg-purple-100 text-purple-700'
                       : 'bg-gray-100 text-gray-700'
                   "
-                  class="px-2 py-1 rounded text-xs font-medium"
+                  class="px-2 py-1 rounded-lg text-xs font-medium"
                 >
                   {{ u.role === "admin" ? "管理員" : "普通用戶" }}
                 </span>
@@ -71,7 +71,7 @@
                       ? 'bg-green-100 text-green-700'
                       : 'bg-red-100 text-red-700'
                   "
-                  class="px-2 py-1 rounded text-xs font-medium"
+                  class="px-2 py-1 rounded-lg text-xs font-medium"
                 >
                   {{ u.is_active ? "啟用" : "停用" }}
                 </span>

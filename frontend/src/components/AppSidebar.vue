@@ -25,7 +25,7 @@
           :key="item.path"
           :to="item.path"
           @click="$emit('close')"
-          class="flex items-center gap-3 px-4 py-3 rounded text-sm font-medium mb-1 transition-colors"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium mb-1 transition-colors"
           :class="
             isActive(item.path)
               ? 'bg-gray-900 text-white'
@@ -57,7 +57,7 @@
         <!-- 登出按鈕 -->
         <button
           @click="handleLogout"
-          class="w-full px-4 py-2 text-sm bg-gray-900 text-white rounded font-medium hover:bg-gray-800 transition-colors"
+          class="w-full px-4 py-2 text-sm bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
         >
           登出
         </button>
@@ -69,7 +69,7 @@
 <script>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { Home, Settings, Users, FileText } from "lucide-vue-next";
+import { Home, Settings, Users, ListTodo } from "lucide-vue-next";
 import { ROUTES } from "../config/constants";
 import AvatarImage from "./AvatarImage.vue";
 
@@ -95,8 +95,8 @@ export default {
     const menuItems = computed(() => {
       const items = [
         { path: ROUTES.HOME, name: "首頁", icon: Home },
+        { path: ROUTES.TODOS, name: "待辦事項", icon: ListTodo },
         { path: ROUTES.ACCOUNT, name: "帳號管理", icon: Settings },
-        { path: ROUTES.TEST, name: "測試頁面", icon: FileText },
       ];
 
       if (props.user?.role === "admin") {

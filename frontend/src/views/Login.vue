@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-50">
-    <div class="bg-white p-8 w-full max-w-sm rounded">
+    <div class="bg-white p-8 w-full max-w-sm rounded-lg border border-gray-200">
       <div class="flex flex-col items-center mb-6">
         <img src="/logo/main_nobk_b.png" alt="EvoSystem Logo" class="h-16 mb-4" />
         <h2 class="text-xl font-semibold text-gray-900">登入 EvoSystem</h2>
@@ -13,7 +13,7 @@
             type="email"
             required
             placeholder="請輸入電子郵件"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
         <div>
@@ -23,10 +23,10 @@
             type="password"
             required
             placeholder="請輸入密碼"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
+        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
           登入
         </button>
       </form>

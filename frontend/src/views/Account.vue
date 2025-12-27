@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-semibold text-gray-900 mb-6">帳號管理</h1>
 
       <!-- 頭像上傳 -->
-      <div class="bg-white p-6 rounded mb-6">
+      <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
         <h2 class="text-base font-medium text-gray-900 mb-4">大頭貼</h2>
         <div class="flex items-center gap-6">
           <AvatarImage
@@ -22,7 +22,7 @@
             <button
               @click="$refs.fileInput.click()"
               :disabled="uploadingAvatar"
-              class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ uploadingAvatar ? '上傳中...' : '上傳新頭像' }}
             </button>
@@ -32,7 +32,7 @@
       </div>
 
       <!-- 帳號資訊 -->
-      <div class="bg-white p-6 rounded">
+      <div class="bg-white p-6 rounded-lg border border-gray-200">
         <h2 class="text-base font-medium text-gray-900 mb-4">帳號資訊</h2>
         <form @submit.prevent="handleUpdateProfile" class="space-y-4">
           <div>
@@ -40,7 +40,7 @@
             <input
               v-model="formData.username"
               type="text"
-              class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+              class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
             />
           </div>
 
@@ -49,7 +49,7 @@
             <input
               v-model="formData.email"
               type="email"
-              class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+              class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
             />
           </div>
 
@@ -60,7 +60,7 @@
               rows="3"
               maxlength="200"
               placeholder="介紹一下自己..."
-              class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900 resize-none"
+              class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900 resize-none"
             ></textarea>
             <p class="text-xs text-gray-500 mt-1">{{ formData.bio?.length || 0 }}/200</p>
           </div>
@@ -69,7 +69,7 @@
             <button
               type="submit"
               :disabled="updatingProfile"
-              class="px-4 py-2 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ updatingProfile ? '儲存中...' : '儲存變更' }}
             </button>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-50">
-    <div class="bg-white p-8 w-full max-w-sm rounded">
+    <div class="bg-white p-8 w-full max-w-sm rounded-lg border border-gray-200">
       <h2 class="text-xl font-semibold mb-6 text-gray-900 text-center">註冊</h2>
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
@@ -10,7 +10,7 @@
             type="text"
             required
             placeholder="請輸入用戶名"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
         <div>
@@ -20,7 +20,7 @@
             type="email"
             required
             placeholder="請輸入電子郵件"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
         <div>
@@ -30,7 +30,7 @@
             type="password"
             required
             placeholder="請輸入密碼"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
         <div>
@@ -40,10 +40,10 @@
             type="password"
             required
             placeholder="請再次輸入密碼"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-900"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800">
+        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
           註冊
         </button>
       </form>

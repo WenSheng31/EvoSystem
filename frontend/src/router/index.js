@@ -5,7 +5,7 @@ import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
 import Account from '../views/Account.vue'
 import Admin from '../views/Admin.vue'
-import Test from '../views/Test.vue'
+import Todos from '../views/Todos.vue'
 
 const routes = [
   {
@@ -39,9 +39,9 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: 'test',
-        name: 'Test',
-        component: Test,
+        path: 'todos',
+        name: 'Todos',
+        component: Todos,
         meta: { requiresAuth: true }
       },
       {

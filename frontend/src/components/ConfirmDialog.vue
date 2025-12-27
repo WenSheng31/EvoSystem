@@ -30,14 +30,14 @@
           <div class="flex gap-3 justify-end">
             <button
               @click="handleCancel"
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               取消
             </button>
             <button
               @click="handleConfirm"
               :class="confirmButtonClass"
-              class="px-4 py-2 text-sm font-medium text-white rounded transition-colors"
+              class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors"
             >
               確認
             </button>

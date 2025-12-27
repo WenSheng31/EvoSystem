@@ -4,7 +4,7 @@
       <div
         v-for="toast in toasts"
         :key="toast.id"
-        class="bg-white px-4 py-3 rounded border border-gray-200 flex items-center gap-3 min-w-[320px] max-w-md"
+        class="bg-white px-4 py-3 rounded-lg border border-gray-200 flex items-center gap-3 min-w-[320px] max-w-md"
       >
         <div class="flex-1">
           <p class="text-sm text-gray-900">{{ toast.message }}</p>
