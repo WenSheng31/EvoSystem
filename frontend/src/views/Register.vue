@@ -59,6 +59,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { useToast } from '../composables/useToast'
+import { getErrorMessage } from '../utils/apiError'
 import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
 
 export default {
@@ -95,13 +96,7 @@ export default {
           router.push(ROUTES.LOGIN)
         }, NAVIGATION_DELAYS.REGISTER_SUCCESS)
       } catch (err) {
-        // 只顯示簡潔的錯誤訊息
-        const detail = err.response?.data?.detail
-        if (detail) {
-          toast.error(detail)
-        } else {
-          toast.error('註冊失敗，請檢查輸入格式')
-        }
+        toast.error(getErrorMessage(err, '註冊失敗，請檢查輸入格式'))
       }
     }
 

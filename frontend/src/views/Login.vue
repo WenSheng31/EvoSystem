@@ -43,6 +43,7 @@ import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
 import { userAPI } from '../api/user'
 import { useToast } from '../composables/useToast'
+import { getErrorMessage } from '../utils/apiError'
 import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
 
 export default {
@@ -67,7 +68,7 @@ export default {
         toast.success('登入成功')
         setTimeout(() => router.push(ROUTES.HOME), NAVIGATION_DELAYS.LOGIN_SUCCESS)
       } catch (err) {
-        toast.error(err.response?.data?.detail || '登入失敗')
+        toast.error(getErrorMessage(err, '登入失敗'))
       }
     }
 

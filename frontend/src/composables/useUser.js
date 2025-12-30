@@ -1,14 +1,16 @@
 import { ref } from 'vue'
 import { userAPI } from '../api/user'
 
+// 全局共享狀態（單例模式）
+const user = ref(null)
+const loading = ref(false)
+const error = ref(null)
+
 /**
  * 用戶狀態管理 Composable
+ * 使用單例模式，所有組件共享同一個用戶狀態
  */
 export function useUser() {
-  const user = ref(null)
-  const loading = ref(false)
-  const error = ref(null)
-
   /**
    * 獲取當前用戶資訊
    */

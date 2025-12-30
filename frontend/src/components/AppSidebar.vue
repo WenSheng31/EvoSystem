@@ -20,21 +20,31 @@
 
       <!-- 導航選單 -->
       <nav class="flex-1 px-4 pt-4 lg:pt-0 overflow-y-auto">
-        <router-link
-          v-for="item in menuItems"
-          :key="item.path"
-          :to="item.path"
-          @click="$emit('close')"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium mb-1 transition-colors"
-          :class="
-            isActive(item.path)
-              ? 'bg-gray-900 text-white'
-              : 'text-gray-700 hover:bg-gray-100'
-          "
-        >
-          <component :is="item.icon" :size="18" />
-          <span>{{ item.name }}</span>
-        </router-link>
+        <div v-for="(category, index) in menuCategories" :key="category.name">
+          <!-- 分類標題 -->
+          <div
+            class="px-4 mb-2 text-xs font-semibold text-gray-500"
+            :class="index > 0 ? 'mt-5' : ''"
+          >
+            {{ category.name }}
+          </div>
+          <!-- 分類項目 -->
+          <router-link
+            v-for="item in category.items"
+            :key="item.path"
+            :to="item.path"
+            @click="$emit('close')"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium mb-1 transition-colors"
+            :class="
+              isActive(item.path)
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            "
+          >
+            <component :is="item.icon" :size="18" />
+            <span>{{ item.name }}</span>
+          </router-link>
+        </div>
       </nav>
 
       <!-- 底部用戶區域 -->
@@ -57,7 +67,7 @@
         <!-- 登出按鈕 -->
         <button
           @click="handleLogout"
-          class="w-full px-4 py-2 text-sm bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+          class="w-full px-4 py-2 text-sm bg-gray-900 text-white rounded-lg font-medium"
         >
           登出
         </button>
@@ -69,14 +79,14 @@
 <script>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { Home, Settings, Users, ListTodo } from "lucide-vue-next";
+import { Home, Settings, Users } from "lucide-vue-next";
 import { ROUTES } from "../config/constants";
 import AvatarImage from "./AvatarImage.vue";
 
 export default {
   name: "AppSidebar",
   components: {
-    AvatarImage
+    AvatarImage,
   },
   props: {
     user: {
@@ -92,18 +102,26 @@ export default {
   setup(props) {
     const route = useRoute();
 
-    const menuItems = computed(() => {
-      const items = [
-        { path: ROUTES.HOME, name: "首頁", icon: Home },
-        { path: ROUTES.TODOS, name: "待辦事項", icon: ListTodo },
-        { path: ROUTES.ACCOUNT, name: "帳號管理", icon: Settings },
+    const menuCategories = computed(() => {
+      const categories = [
+        {
+          name: "系統功能",
+          items: [
+            { path: ROUTES.HOME, name: "首頁", icon: Home },
+            { path: ROUTES.ACCOUNT, name: "帳號管理", icon: Settings },
+          ],
+        },
       ];
 
       if (props.user?.role === "admin") {
-        items.push({ path: ROUTES.ADMIN, name: "用戶管理", icon: Users });
+        categories[0].items.push({
+          path: ROUTES.ADMIN,
+          name: "用戶管理",
+          icon: Users,
+        });
       }
 
-      return items;
+      return categories;
     });
 
     const isActive = (path) => {
@@ -117,10 +135,10 @@ export default {
     };
 
     return {
-      menuItems,
+      menuCategories,
       isActive,
       handleLogout,
-      ROUTES
+      ROUTES,
     };
   },
 };

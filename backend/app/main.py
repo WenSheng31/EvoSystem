@@ -3,8 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .core.config import settings
 from .core.database import engine, Base
-from .api.routes import auth, users, admin, todos
+from .api.routes import auth, users, admin
 from pathlib import Path
+
+# 導入所有模型（確保 SQLAlchemy 知道這些模型）
+from .models.user import User
 
 # 創建資料庫表
 Base.metadata.create_all(bind=engine)
@@ -30,7 +33,6 @@ app.add_middleware(
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["認證"])
 app.include_router(users.router, prefix=settings.API_V1_PREFIX, tags=["用戶"])
 app.include_router(admin.router, prefix=f"{settings.API_V1_PREFIX}/admin", tags=["管理員"])
-app.include_router(todos.router, prefix=settings.API_V1_PREFIX, tags=["待辦事項"])
 
 
 @app.get("/")

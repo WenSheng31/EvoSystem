@@ -84,6 +84,7 @@ import { ref, onMounted } from 'vue'
 import { userAPI } from '../api/user'
 import { useToast } from '../composables/useToast'
 import { useUser } from '../composables/useUser'
+import { getErrorMessage } from '../utils/apiError'
 import AvatarImage from '../components/AvatarImage.vue'
 
 export default {
@@ -124,7 +125,7 @@ export default {
         updateUser(response.data)
         toast.success('頭像更新成功')
       } catch (error) {
-        toast.error(error.response?.data?.detail || '上傳失敗')
+        toast.error(getErrorMessage(error, '上傳失敗'))
       } finally {
         uploadingAvatar.value = false
         event.target.value = '' // 清空文件選擇，允許重新上傳同一文件
@@ -150,7 +151,7 @@ export default {
         updateUser(response.data)
         toast.success('資料更新成功')
       } catch (error) {
-        toast.error(error.response?.data?.detail || '更新失敗')
+        toast.error(getErrorMessage(error, '更新失敗'))
       } finally {
         updatingProfile.value = false
       }

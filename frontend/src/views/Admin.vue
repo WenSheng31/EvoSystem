@@ -4,7 +4,7 @@
 
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[1000px]">
+        <table class="w-full min-w-[1100px]">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
               <th
@@ -85,24 +85,24 @@
                   @click="toggleActive(u)"
                   :class="
                     u.is_active
-                      ? 'text-orange-600 hover:text-orange-800'
-                      : 'text-green-600 hover:text-green-800'
+                      ? 'text-orange-600 border-orange-300 hover:bg-orange-50'
+                      : 'text-green-600 border-green-300 hover:bg-green-50'
                   "
-                  class="font-medium"
+                  class="px-3 py-1 text-sm border rounded"
                 >
                   {{ u.is_active ? "停用" : "啟用" }}
                 </button>
                 <button
                   v-if="u.id !== user?.id"
                   @click="handleResetPassword(u)"
-                  class="text-blue-600 hover:text-blue-800 font-medium"
+                  class="px-3 py-1 text-sm text-blue-600 border border-blue-300 rounded hover:bg-blue-50"
                 >
                   重置密碼
                 </button>
                 <button
                   v-if="u.id !== user?.id"
                   @click="confirmDelete(u)"
-                  class="text-red-600 hover:text-red-800 font-medium"
+                  class="px-3 py-1 text-sm text-red-600 border border-red-300 rounded hover:bg-red-50"
                 >
                   刪除
                 </button>
@@ -127,6 +127,8 @@ import { useToast } from "../composables/useToast";
 import { useConfirmDialog } from "../composables/useConfirmDialog";
 import { useInputDialog } from "../composables/useInputDialog";
 import { ROUTES } from "../config/constants";
+import { formatDate } from "../utils/dateFormatter";
+import { getErrorMessage } from "../utils/apiError";
 import AvatarImage from "../components/AvatarImage.vue";
 
 export default {
@@ -172,7 +174,7 @@ export default {
         }
         toast.success(response.data.is_active ? "已啟用用戶" : "已停用用戶");
       } catch (error) {
-        toast.error(error.response?.data?.detail || "操作失敗");
+        toast.error(getErrorMessage(error, "操作失敗"));
       }
     };
 
@@ -189,20 +191,9 @@ export default {
           users.value = users.value.filter((u) => u.id !== targetUser.id);
           toast.success("用戶已刪除");
         } catch (error) {
-          toast.error(error.response?.data?.detail || "刪除失敗");
+          toast.error(getErrorMessage(error, "刪除失敗"));
         }
       }
-    };
-
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleString("zh-TW", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
     };
 
     const handleResetPassword = async (targetUser) => {
@@ -243,7 +234,7 @@ export default {
         await adminAPI.resetUserPassword(targetUser.id, password);
         toast.success("密碼重置成功");
       } catch (error) {
-        toast.error(error.response?.data?.detail || "重置密碼失敗");
+        toast.error(getErrorMessage(error, "重置密碼失敗"));
       }
     };
 
