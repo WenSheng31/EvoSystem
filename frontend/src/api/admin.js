@@ -21,5 +21,14 @@ export const adminAPI = {
     return api.patch(`/admin/users/${userId}/reset-password`, {
       new_password: newPassword
     })
+  },
+
+  // 獲取審計日誌（分頁 + 篩選）
+  getAuditLogs(page = 1, pageSize = 20, action = null) {
+    const params = { page, page_size: pageSize }
+    if (action) {
+      params.action = action
+    }
+    return api.get('/admin/audit-logs', { params })
   }
 }

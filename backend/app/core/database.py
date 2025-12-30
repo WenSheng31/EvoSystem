@@ -3,15 +3,31 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .config import settings
 
-engine = create_engine(settings.DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(
+    settings.DATABASE_URL,
+    pool_size=5,
+    max_overflow=10,
+    pool_pre_ping=True,
+    pool_recycle=3600,
+    pool_timeout=30,
+    echo=False,
+    pool_reset_on_return='rollback'
+)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+    expire_on_commit=False
+)
+
 Base = declarative_base()
 
 
 def get_db():
-    """資料庫依賴注入"""
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+        db.expunge_all()

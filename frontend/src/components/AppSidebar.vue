@@ -78,9 +78,12 @@
 
 <script>
 import { computed } from "vue";
-import { useRoute } from "vue-router";
-import { Home, Settings, Users } from "lucide-vue-next";
+import { useRoute, useRouter } from "vue-router";
+import { Home, Settings, Users, FileText } from "lucide-vue-next";
 import { ROUTES } from "../config/constants";
+import { authAPI } from "../api/auth";
+import { useConfirmDialog } from "../composables/useConfirmDialog";
+import { useToast } from "../composables/useToast";
 import AvatarImage from "./AvatarImage.vue";
 
 export default {
@@ -101,6 +104,9 @@ export default {
   emits: ["close"],
   setup(props) {
     const route = useRoute();
+    const router = useRouter();
+    const { confirm } = useConfirmDialog();
+    const toast = useToast();
 
     const menuCategories = computed(() => {
       const categories = [
@@ -114,10 +120,12 @@ export default {
       ];
 
       if (props.user?.role === "admin") {
-        categories[0].items.push({
-          path: ROUTES.ADMIN,
-          name: "用戶管理",
-          icon: Users,
+        categories.push({
+          name: "管理功能",
+          items: [
+            { path: ROUTES.ADMIN, name: "用戶管理", icon: Users },
+            { path: ROUTES.AUDIT_LOGS, name: "審計日誌", icon: FileText },
+          ],
         });
       }
 
@@ -128,10 +136,25 @@ export default {
       return route.path === path;
     };
 
-    const handleLogout = () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userRole");
-      window.location.href = ROUTES.LOGIN;
+    const handleLogout = async () => {
+      // 顯示確認對話框
+      const confirmed = await confirm({
+        title: "確認登出",
+        message: "您確定要登出嗎？",
+        type: "danger"
+      });
+
+      if (!confirmed) return;
+
+      try {
+        // 調用後端登出 API 清除 HttpOnly Cookie
+        await authAPI.logout();
+        toast.success("已成功登出");
+        // 跳轉到登入頁
+        router.push(ROUTES.LOGIN);
+      } catch (err) {
+        toast.error("登出失敗，請重試");
+      }
     };
 
     return {

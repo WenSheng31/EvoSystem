@@ -4,10 +4,11 @@
     :style="{ width: `${size}px`, height: `${size}px` }"
   >
     <img
-      v-if="avatar"
-      :src="getAvatarUrl(avatar)"
+      v-if="avatarUrl"
+      :src="avatarUrl"
       :alt="alt"
       class="w-full h-full object-cover"
+      @error="handleError"
     />
     <span
       v-else
@@ -20,7 +21,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { getAvatarUrl } from '../utils/avatar'
 
 export default {
@@ -40,17 +41,29 @@ export default {
     },
     alt: {
       type: String,
-      default: 'Avatar'
+      default: '頭像'
     }
   },
   setup(props) {
+    const imageError = ref(false)
+
+    const avatarUrl = computed(() => {
+      if (imageError.value || !props.avatar) return null
+      return getAvatarUrl(props.avatar)
+    })
+
     const displayLetter = computed(() => {
       return props.username ? props.username.charAt(0).toUpperCase() : '?'
     })
 
+    const handleError = () => {
+      imageError.value = true
+    }
+
     return {
+      avatarUrl,
       displayLetter,
-      getAvatarUrl
+      handleError
     }
   }
 }

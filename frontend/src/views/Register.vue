@@ -24,7 +24,10 @@
           />
         </div>
         <div>
-          <label class="block mb-1.5 text-gray-700 text-sm font-medium">密碼</label>
+          <label class="block mb-1.5 text-gray-700 text-sm font-medium">
+            密碼
+            <span class="text-xs text-gray-500 ml-1">(8-12字符，必須包含英文)</span>
+          </label>
           <input
             v-model="formData.password"
             type="password"
@@ -43,8 +46,12 @@
             class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
-          註冊
+        <button
+          type="submit"
+          :disabled="isSubmitting"
+          class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {{ isSubmitting ? '註冊中...' : '註冊' }}
         </button>
       </form>
       <div class="mt-6 text-center text-sm text-gray-600">
@@ -73,8 +80,11 @@ export default {
       password: '',
       confirmPassword: ''
     })
+    const isSubmitting = ref(false)
 
     const handleRegister = async () => {
+      if (isSubmitting.value) return // 防止重複提交
+
       // 前端驗證
       if (formData.value.username.length > 20) {
         toast.error('用戶名最多 20 個字符')
@@ -87,6 +97,19 @@ export default {
         return
       }
 
+      // 驗證密碼長度（前端簡單檢查，後端會有完整驗證）
+      if (formData.value.password.length < 8 || formData.value.password.length > 12) {
+        toast.error('密碼長度必須為 8-12 個字符')
+        return
+      }
+
+      // 驗證密碼包含英文
+      if (!/[A-Za-z]/.test(formData.value.password)) {
+        toast.error('密碼必須包含至少一個英文字母')
+        return
+      }
+
+      isSubmitting.value = true
       try {
         // 只發送必要的字段到後端
         const { username, email, password } = formData.value
@@ -97,11 +120,14 @@ export default {
         }, NAVIGATION_DELAYS.REGISTER_SUCCESS)
       } catch (err) {
         toast.error(getErrorMessage(err, '註冊失敗，請檢查輸入格式'))
+      } finally {
+        isSubmitting.value = false
       }
     }
 
     return {
       formData,
+      isSubmitting,
       handleRegister
     }
   }

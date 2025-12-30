@@ -1,3 +1,12 @@
+/**
+ * 路由配置
+ *
+ * HttpOnly Cookie 認證模式下的路由策略：
+ * - 前端無法訪問 Cookie，因此無法在路由層檢查認證狀態
+ * - 所有路由都允許訪問，依賴後端 API 的 401 錯誤來處理未認證情況
+ * - 當受保護的頁面加載時，會調用 API 獲取數據
+ * - 如果 Cookie 無效，後端返回 401，前端攔截器會自動跳轉到登入頁
+ */
 import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '../layouts/MainLayout.vue'
 import Login from '../views/Login.vue'
@@ -5,6 +14,7 @@ import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
 import Account from '../views/Account.vue'
 import Admin from '../views/Admin.vue'
+import AuditLogs from '../views/AuditLogs.vue'
 
 const routes = [
   {
@@ -29,7 +39,7 @@ const routes = [
         path: 'home',
         name: 'Home',
         component: Home,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true }  // 標記需要認證（僅用於文檔說明）
       },
       {
         path: 'account',
@@ -42,6 +52,12 @@ const routes = [
         name: 'Admin',
         component: Admin,
         meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'audit-logs',
+        name: 'AuditLogs',
+        component: AuditLogs,
+        meta: { requiresAuth: true, requiresAdmin: true }
       }
     ]
   }
@@ -52,29 +68,14 @@ const router = createRouter({
   routes
 })
 
-// 路由守衛
+// 路由守衛（簡化版）
+// 使用 HttpOnly Cookie 後，前端無法直接檢查認證狀態
+// 認證檢查完全依賴後端 API，如果 Cookie 無效會收到 401 錯誤
+// response interceptor 會自動處理 401 並跳轉到登入頁
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const userRole = localStorage.getItem('userRole')
-
-  // 檢查是否需要登入
-  if (to.meta.requiresAuth && !token) {
-    next('/login')
-    return
-  }
-
-  // 檢查是否需要管理員權限
-  if (to.meta.requiresAdmin && userRole !== 'admin') {
-    next('/home')
-    return
-  }
-
-  // 已登入用戶訪問登入/註冊頁
-  if ((to.path === '/login' || to.path === '/register') && token) {
-    next('/home')
-    return
-  }
-
+  // 允許所有路由導航
+  // 受保護的頁面會在組件加載時調用 API
+  // 如果未認證，後端會返回 401，前端攔截器會自動跳轉
   next()
 })
 

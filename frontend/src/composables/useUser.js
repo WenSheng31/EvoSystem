@@ -1,3 +1,11 @@
+/**
+ * 用戶狀態管理 Composable
+ *
+ * HttpOnly Cookie 模式下的用戶狀態管理：
+ * - 不使用 localStorage 存儲 Token（由 HttpOnly Cookie 處理）
+ * - 使用單例模式，所有組件共享同一個用戶狀態
+ * - 通過 API 調用獲取和更新用戶信息
+ */
 import { ref } from 'vue'
 import { userAPI } from '../api/user'
 
@@ -6,10 +14,6 @@ const user = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
-/**
- * 用戶狀態管理 Composable
- * 使用單例模式，所有組件共享同一個用戶狀態
- */
 export function useUser() {
   /**
    * 獲取當前用戶資訊

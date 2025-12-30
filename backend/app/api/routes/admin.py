@@ -1,18 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import List
+from sqlalchemy import func
+from typing import List, Optional
 from pathlib import Path
+import math
 
 from ...core.database import get_db
 from ...core.security import get_admin_user, get_password_hash
 from ...core.config import settings
 from ...core.file_utils import AvatarManager
 from ...models.user import User
+from ...models.audit_log import AuditLog
 from ...schemas.user import UserResponse, AdminPasswordReset
+from ...schemas.audit_log import AuditLogResponse, AuditLogListResponse
 
 router = APIRouter()
 
-# 上傳目錄設定
 UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / settings.UPLOAD_DIR / "avatars"
 
 
@@ -23,8 +26,6 @@ def get_all_users(
     admin: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """獲取所有用戶列表（僅管理員）"""
-    # 驗證參數範圍
     if skip < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -46,7 +47,6 @@ def toggle_user_active(
     admin: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """啟用/停用用戶（僅管理員）"""
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
@@ -55,14 +55,12 @@ def toggle_user_active(
             detail="用戶不存在"
         )
 
-    # 不能停用自己
     if user.id == admin.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="不能停用自己的帳號"
         )
 
-    # 切換啟用狀態
     user.is_active = not user.is_active
     db.commit()
     db.refresh(user)
@@ -76,7 +74,6 @@ def delete_user(
     admin: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """刪除用戶（僅管理員）"""
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
@@ -85,18 +82,15 @@ def delete_user(
             detail="用戶不存在"
         )
 
-    # 不能刪除自己
     if user.id == admin.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="不能刪除自己的帳號"
         )
 
-    # 刪除用戶頭像文件
     if user.avatar:
         AvatarManager.delete_avatar(user.avatar, UPLOAD_DIR)
 
-    # 刪除用戶
     db.delete(user)
     db.commit()
 
@@ -110,7 +104,6 @@ def reset_user_password(
     admin: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """重置用戶密碼（僅管理員）"""
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
@@ -119,15 +112,72 @@ def reset_user_password(
             detail="用戶不存在"
         )
 
-    # 不能重置自己的密碼
     if user.id == admin.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="不能重置自己的密碼，請使用正常的修改密碼流程"
         )
 
-    # 加密並更新密碼
     user.hashed_password = get_password_hash(password_data.new_password)
     db.commit()
 
     return {"message": f"用戶 {user.username} 的密碼已重置"}
+
+
+@router.get("/audit-logs", response_model=AuditLogListResponse)
+def get_audit_logs(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    action: Optional[str] = Query(None),
+    admin: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    query = db.query(
+        AuditLog.id,
+        AuditLog.user_id,
+        User.username,
+        AuditLog.action,
+        AuditLog.ip_address,
+        AuditLog.user_agent,
+        AuditLog.details,
+        AuditLog.created_at
+    ).outerjoin(User, AuditLog.user_id == User.id)
+
+    if action:
+        query = query.filter(AuditLog.action == action)
+
+    query = query.order_by(AuditLog.created_at.desc())
+
+    offset = (page - 1) * page_size
+    results = query.offset(offset).limit(page_size + 1).all()
+
+    has_more = len(results) > page_size
+    if has_more:
+        results = results[:page_size]
+
+    total = page * page_size if has_more else offset + len(results)
+    total_pages = page + 1 if has_more else page
+
+    logs = [
+        AuditLogResponse(
+            id=row[0],
+            user_id=row[1],
+            username=row[2],
+            action=row[3],
+            ip_address=row[4],
+            user_agent=row[5],
+            details=row[6],
+            created_at=row[7]
+        )
+        for row in results
+    ]
+
+    db.expunge_all()
+
+    return AuditLogListResponse(
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages,
+        logs=logs
+    )

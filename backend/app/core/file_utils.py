@@ -1,90 +1,46 @@
-"""
-統一的文件操作工具
-避免在多個路由中重複文件處理邏輯
-"""
 from pathlib import Path
-from typing import Optional
 
 
 class AvatarManager:
-    """頭像文件管理器"""
-    ALLOWED_PREFIX = "backend/uploads/avatars/"
+    ALLOWED_SIGNATURES = {
+        b'\xFF\xD8\xFF': 'jpeg',
+        b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A': 'png',
+        b'\x47\x49\x46\x38\x37\x61': 'gif',
+        b'\x47\x49\x46\x38\x39\x61': 'gif',
+        b'\x52\x49\x46\x46': 'webp',
+    }
 
     @staticmethod
-    def is_safe_path(avatar_path: str, upload_dir: Path) -> bool:
-        """
-        檢查文件路徑是否安全
-
-        防止路徑穿越攻擊（Path Traversal）
-
-        Args:
-            avatar_path: 頭像路徑（如："backend/uploads/avatars/xxx.jpg"）
-            upload_dir: 上傳目錄的絕對路徑
-
-        Returns:
-            bool: 路徑是否安全
-        """
-        # 檢查前綴
-        if not avatar_path.startswith(AvatarManager.ALLOWED_PREFIX):
-            return False
-
-        # 提取文件名
-        filename = avatar_path.split("/")[-1]
-
-        # 檢查文件名中是否包含危險字符
-        if ".." in filename or "/" in filename or "\\" in filename:
-            return False
-
-        # 檢查解析後的路徑是否在允許的目錄內
-        avatar_file = upload_dir / filename
-        try:
-            return avatar_file.resolve().parent == upload_dir.resolve()
-        except (ValueError, OSError):
-            return False
+    def validate_image(content: bytes) -> bool:
+        for signature in AvatarManager.ALLOWED_SIGNATURES.keys():
+            if content.startswith(signature):
+                if signature == b'\x52\x49\x46\x46':
+                    return len(content) >= 12 and content[8:12] == b'WEBP'
+                return True
+        return False
 
     @staticmethod
-    def delete_avatar(avatar_path: str, upload_dir: Path) -> bool:
-        """
-        安全地刪除頭像文件
-
-        Args:
-            avatar_path: 頭像路徑（如："backend/uploads/avatars/xxx.jpg"）
-            upload_dir: 上傳目錄的絕對路徑
-
-        Returns:
-            bool: 是否成功刪除
-        """
+    def delete_avatar(db_path: str, upload_root: Path) -> bool:
         try:
-            # 安全性檢查
-            if not AvatarManager.is_safe_path(avatar_path, upload_dir):
+            clean_path = db_path.replace("backend/", "").replace("\\", "/")
+
+            if not clean_path.startswith("uploads/avatars/"):
                 return False
 
-            # 提取文件名並構建完整路徑
-            filename = avatar_path.split("/")[-1]
-            avatar_file = upload_dir / filename
+            filename = clean_path.split("/")[-1]
+            if ".." in filename or "/" in filename or "\\" in filename:
+                return False
 
-            # 刪除文件
-            if avatar_file.exists() and avatar_file.is_file():
-                avatar_file.unlink()
+            file_path = upload_root / "avatars" / filename
+            expected_parent = (upload_root / "avatars").resolve()
+
+            if file_path.resolve().parent != expected_parent:
+                return False
+
+            if file_path.exists() and file_path.is_file():
+                file_path.unlink()
                 return True
 
             return False
-        except OSError:
-            # 文件刪除失敗（權限問題、文件被占用等）
+        except (ValueError, OSError):
             return False
-
-    @staticmethod
-    def get_filename_from_path(avatar_path: str) -> Optional[str]:
-        """
-        從頭像路徑中提取文件名
-
-        Args:
-            avatar_path: 頭像路徑（如："backend/uploads/avatars/xxx.jpg"）
-
-        Returns:
-            Optional[str]: 文件名，如果路徑無效則返回 None
-        """
-        if not avatar_path or not avatar_path.startswith(AvatarManager.ALLOWED_PREFIX):
-            return None
-
-        return avatar_path.split("/")[-1]

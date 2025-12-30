@@ -26,8 +26,12 @@
             class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-900"
           />
         </div>
-        <button type="submit" class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
-          登入
+        <button
+          type="submit"
+          :disabled="isSubmitting"
+          class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {{ isSubmitting ? '登入中...' : '登入' }}
         </button>
       </form>
       <div class="mt-6 text-center text-sm text-gray-600">
@@ -41,7 +45,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authAPI } from '../api/auth'
-import { userAPI } from '../api/user'
 import { useToast } from '../composables/useToast'
 import { getErrorMessage } from '../utils/apiError'
 import { NAVIGATION_DELAYS, ROUTES } from '../config/constants'
@@ -55,25 +58,28 @@ export default {
       email: '',
       password: ''
     })
+    const isSubmitting = ref(false)
 
     const handleLogin = async () => {
-      try {
-        const response = await authAPI.login(formData.value)
-        localStorage.setItem('token', response.data.access_token)
+      if (isSubmitting.value) return // 防止重複提交
 
-        // 獲取用戶信息並存儲角色
-        const userInfo = await userAPI.getCurrentUser()
-        localStorage.setItem('userRole', userInfo.data.role)
+      isSubmitting.value = true
+      try {
+        // 登入請求 - 後端會自動設置 HttpOnly Cookie
+        await authAPI.login(formData.value)
 
         toast.success('登入成功')
         setTimeout(() => router.push(ROUTES.HOME), NAVIGATION_DELAYS.LOGIN_SUCCESS)
       } catch (err) {
         toast.error(getErrorMessage(err, '登入失敗'))
+      } finally {
+        isSubmitting.value = false
       }
     }
 
     return {
       formData,
+      isSubmitting,
       handleLogin
     }
   }

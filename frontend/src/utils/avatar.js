@@ -1,7 +1,13 @@
-import { API_BASE_URL } from './config'
+import { API_CONFIG } from '../config/constants'
 
 export const getAvatarUrl = (avatarPath) => {
   if (!avatarPath) return null
-  const cleanPath = avatarPath.replace(/\\/g, '/').replace('backend/', '')
-  return `${API_BASE_URL}/${cleanPath}`
+
+  let path = avatarPath.replace(/\\/g, '/').replace('backend/', '')
+
+  if (path.startsWith('/')) {
+    path = path.substring(1)
+  }
+
+  return `${API_CONFIG.BASE_URL}/${path}`
 }
