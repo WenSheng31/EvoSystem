@@ -1,6 +1,6 @@
 # EvoSystem
 
-一個現代化的全端會員管理系統，提供完整的用戶管理、個人資料編輯、待辦事項管理等功能。
+一個現代化的全端會員管理系統，提供完整的用戶管理、個人資料編輯等功能。
 
 ## 功能特色
 
@@ -8,11 +8,6 @@
 - 用戶註冊與登入（JWT 認證）
 - 個人資料管理（用戶名、郵箱、個人簡介）
 - 頭像上傳（支援 JPG, PNG, GIF, WebP，最大 5MB）
-- 待辦事項管理
-  - 新增、編輯、刪除待辦事項
-  - 完成狀態切換
-  - 行內編輯功能
-  - 私有數據（每個用戶只能看到自己的待辦事項）
 
 ### 管理員功能
 - 用戶管理
@@ -122,7 +117,7 @@ EvoSystem/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   │   └── routes/      # API 路由 (auth, users, admin, todos)
+│   │   │   └── routes/      # API 路由 (auth, users, admin)
 │   │   ├── core/            # 核心配置 (config, database, security)
 │   │   ├── models/          # SQLAlchemy 資料模型
 │   │   └── schemas/         # Pydantic 請求/回應模型
@@ -160,20 +155,19 @@ EvoSystem/
 - `/login` - 登入頁
 - `/register` - 註冊頁
 - `/home` - 首頁（需認證）
-- `/todos` - 待辦事項（需認證）
 - `/account` - 帳號管理（需認證）
 - `/admin` - 用戶管理（需管理員權限）
 
 ### API 端點
+
+**認證與用戶**
 - `POST /api/register` - 用戶註冊
 - `POST /api/login` - 用戶登入
 - `GET /api/me` - 獲取當前用戶資料
 - `PATCH /api/me` - 更新個人資料
 - `POST /api/avatar` - 上傳頭像
-- `GET /api/todos` - 獲取待辦事項
-- `POST /api/todos` - 建立待辦事項
-- `PATCH /api/todos/{id}` - 更新待辦事項
-- `DELETE /api/todos/{id}` - 刪除待辦事項
+
+**管理員**
 - `GET /api/admin/users` - 獲取所有用戶（管理員）
 - `PATCH /api/admin/users/{id}/toggle-active` - 切換用戶狀態（管理員）
 - `POST /api/admin/users/{id}/reset-password` - 重置密碼（管理員）
